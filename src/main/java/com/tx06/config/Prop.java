@@ -19,9 +19,8 @@ public class Prop {
     @Data
     public static class Server {
         private String run;
-        private String basePath = "https://a.tx06.com/";
+        private String basePath;
         private String uuid;
-        private List<Integer> helpMeSkuIdList;
         public boolean getRun() {
             if(StrUtil.isNotEmpty(run)){
                 return run.equals("true");
@@ -32,7 +31,7 @@ public class Prop {
 
         public String getBasePath() {
             if(basePath == null){
-                this.basePath = "https://a.tx06.com/";
+                this.basePath = Constant.BASE_PATH;
             }
             return basePath;
         }

@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.tx06.config.Constant;
 import com.tx06.config.Prop;
 import com.tx06.entity.Apidoc;
 import com.tx06.entity.ApidocFieldDict;
@@ -114,12 +115,18 @@ public abstract class AbstractApidocAspect {
                     + "' order by  c.`TABLE_NAME`";
             column = jdbcTemplate.queryForList(sql);
             prop = SpringUtil.getBean(Prop.class);
+            if(!StrUtil.isEmpty(prop.getServer().getBasePath())){
+                Constant.BASE_PATH = prop.getServer().getBasePath();
+            }
         }
 
     }
 
     //内置
     public void sendApidoc(Object response) throws SQLException, IOException {
+        if(this.webSiteUrl.contains("apidoc/add")){
+            return;
+        }
         String urlParam = request.getQueryString();
         initFieldMap();
         apidoc = new Apidoc();
