@@ -13,7 +13,7 @@
     -->
 
     <artifactId>apidoc.clients</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <groupId>com.tx06</groupId>
     <parent>
         <groupId>org.sonatype.oss</groupId>

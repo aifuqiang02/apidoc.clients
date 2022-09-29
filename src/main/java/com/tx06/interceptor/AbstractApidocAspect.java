@@ -64,8 +64,7 @@ public abstract class AbstractApidocAspect {
         if(run != null){
             return run;
         }else{
-            Prop prop = SpringUtil.getBean(Prop.class);
-            run = prop.getServer().getRun();
+            run = getProp().getServer().getRun();
         }
         return run;
     }
@@ -114,9 +113,8 @@ public abstract class AbstractApidocAspect {
             String sql = "SELECT c.`TABLE_NAME` AS table_name,LOWER(REPLACE(c.`COLUMN_NAME`,'_','')) AS column_name,c.`COLUMN_TYPE` AS column_type,c.`COLUMN_COMMENT` AS column_comment FROM `information_schema`.`COLUMNS` c WHERE c.`TABLE_SCHEMA` = '" + dbName
                     + "' order by  c.`TABLE_NAME`";
             column = jdbcTemplate.queryForList(sql);
-            prop = SpringUtil.getBean(Prop.class);
-            if(!StrUtil.isEmpty(prop.getServer().getBasePath())){
-                Constant.BASE_PATH = prop.getServer().getBasePath();
+            if(!StrUtil.isEmpty(getProp().getServer().getBasePath())){
+                Constant.BASE_PATH = getProp().getServer().getBasePath();
             }
         }
 
@@ -130,7 +128,7 @@ public abstract class AbstractApidocAspect {
         String urlParam = request.getQueryString();
         initFieldMap();
         apidoc = new Apidoc();
-        apidoc.setU_project_uuid(prop.getServer().getUuid());
+        apidoc.setU_project_uuid(getProp().getServer().getUuid());
         apidoc.setTitle(title);
         apidoc.setFull_title(this.fullTitle);
         apidoc.setUrl(this.webSiteUrl);
@@ -149,6 +147,13 @@ public abstract class AbstractApidocAspect {
         setParameterList(apidoc);
         setResponseList(apidoc);
         new Sender(apidoc).start();
+    }
+
+    public Prop getProp() {
+        if(prop == null){
+            prop = SpringUtil.getBean(Prop.class);
+        }
+        return prop;
     }
 
     //内置
