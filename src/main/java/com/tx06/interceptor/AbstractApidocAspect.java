@@ -22,6 +22,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.xml.ws.RequestWrapper;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,7 +46,7 @@ public abstract class AbstractApidocAspect {
     protected String title = "";
     protected String u_project_uuid = "";
     private Map<String, List<Map>> fieldMap = new HashMap<String, List<Map>>();
-    private List<Map<String, Object>> column = new ArrayList<>();
+    private static List<Map<String, Object>> column = new ArrayList<>();
     private Apidoc apidoc = new Apidoc();
     protected Log log = LogFactory.getLog(AbstractApidocAspect.class);
     protected String webSiteBasePath;
@@ -102,9 +103,8 @@ public abstract class AbstractApidocAspect {
         this.request = attributes.getRequest();
         this.method = methodSignature.getMethod();
         this.fieldMap = new HashMap<>();
-        this.column = new ArrayList<>();
-        this.webSiteBasePath = getBasePath(request);
         this.webSiteUrl = getUrl(request);
+
 
         if(jdbcTemplate == null){
             jdbcTemplate = SpringUtil.getBean(JdbcTemplate.class);
@@ -116,6 +116,7 @@ public abstract class AbstractApidocAspect {
             if(!StrUtil.isEmpty(getProp().getServer().getBasePath())){
                 Constant.BASE_PATH = getProp().getServer().getBasePath();
             }
+            this.webSiteBasePath = getBasePath(request);
         }
 
     }
@@ -349,12 +350,15 @@ public abstract class AbstractApidocAspect {
     }
 
     //内置
-    public static String getShortMap(HttpServletRequest req, Method method) throws IOException {
+    public String getShortMap(HttpServletRequest req, Method method) throws IOException {
         String methodStr = req.getMethod().toLowerCase();
         if ("get".equals(methodStr)) {
             return "";
         } else {
             if ("post".equals(methodStr) && req instanceof RequestWrapper) {
+                String requestParam = getBodyString(req);
+                return requestParam;
+            }else if("post".equals(methodStr) && req.getClass().getName().contains("RepeatedlyRequestWrapper") &&  this.apidoc.getContent_type()!=null && this.apidoc.getContent_type().equals("application/json")){
                 String requestParam = getBodyString(req);
                 return requestParam;
             } else {
