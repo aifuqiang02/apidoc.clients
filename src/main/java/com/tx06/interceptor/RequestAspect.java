@@ -35,7 +35,7 @@ public class RequestAspect extends AbstractApidocAspect{
 
         //判断类、方法是否有name
         this.setFullTitleName();
-        if(StrUtil.isEmpty(this.fullTitle)){
+        if(!checkCanSend()){
             return pjp.proceed();
         }
         Object ret = pjp.proceed();

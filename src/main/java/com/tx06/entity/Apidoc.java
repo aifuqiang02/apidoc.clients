@@ -7,8 +7,6 @@ import java.util.List;
 
 @Data
 public class Apidoc {
-    private List<ApidocFieldDict> apidocParameter;
-    private List<ApidocFieldDict> apidocResponse;
 
     /**
      * 主键
@@ -114,19 +112,5 @@ public class Apidoc {
      * 字段的个数
      */
     private Integer field_count;
-
-    public List<ApidocFieldDict> getApidocParameter() {
-        if(apidocParameter == null){
-            apidocParameter = new ArrayList<>();
-        }
-        return apidocParameter;
-    }
-
-    public List<ApidocFieldDict> getApidocResponse() {
-        if(apidocResponse == null){
-            apidocResponse = new ArrayList<>();
-        }
-        return apidocResponse;
-    }
 
 }

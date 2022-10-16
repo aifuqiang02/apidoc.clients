@@ -7,11 +7,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.tx06.config.Constant;
 import com.tx06.config.Prop;
 import com.tx06.entity.Apidoc;
-import com.tx06.entity.ApidocFieldDict;
-import com.tx06.request.Sender;
+import com.tx06.request.SenderServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -22,7 +20,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.xml.ws.RequestWrapper;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +27,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -45,8 +41,6 @@ public abstract class AbstractApidocAspect {
     protected String fullTitle = "";
     protected String title = "";
     protected String u_project_uuid = "";
-    private Map<String, List<Map>> fieldMap = new HashMap<String, List<Map>>();
-    private static List<Map<String, Object>> column = new ArrayList<>();
     private Apidoc apidoc = new Apidoc();
     protected Log log = LogFactory.getLog(AbstractApidocAspect.class);
     protected String webSiteBasePath;
@@ -81,6 +75,10 @@ public abstract class AbstractApidocAspect {
             this.fullTitle = null;
             return;
         }
+        if(request.getMethod() == null){
+            this.fullTitle = null;
+            return;
+        }
         this.restController = proceedingJoinPoint.getTarget().getClass().getAnnotation(RestController.class);
         if(this.restController == null){
             this.fullTitle = null;
@@ -94,6 +92,12 @@ public abstract class AbstractApidocAspect {
         this.fullTitle = (cv.endsWith("/") ? cv : cv + "/") + (title.startsWith("/") ? title.substring(1):title);
     }
 
+    protected boolean checkCanSend(){
+        if(this.fullTitle == null)return false;
+        if(this.request == null || this.request.getParameter("isFromApidoc") == null)return false;
+        return true;
+    }
+
     /**
      * 3、初始化前置变量
      * */
@@ -102,32 +106,15 @@ public abstract class AbstractApidocAspect {
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
         this.request = attributes.getRequest();
         this.method = methodSignature.getMethod();
-        this.fieldMap = new HashMap<>();
         this.webSiteUrl = getUrl(request);
-
-
-        if(jdbcTemplate == null){
-            jdbcTemplate = SpringUtil.getBean(JdbcTemplate.class);
-            String [] arr = this.jdbcTemplate.getDataSource().getConnection().getMetaData().getURL().split("\\?")[0].split("/");
-            dbName = arr[arr.length-1];
-            String sql = "SELECT c.`TABLE_NAME` AS table_name,LOWER(REPLACE(c.`COLUMN_NAME`,'_','')) AS column_name,c.`COLUMN_TYPE` AS column_type,c.`COLUMN_COMMENT` AS column_comment FROM `information_schema`.`COLUMNS` c WHERE c.`TABLE_SCHEMA` = '" + dbName
-                    + "' order by  c.`TABLE_NAME`";
-            column = jdbcTemplate.queryForList(sql);
-            if(!StrUtil.isEmpty(getProp().getServer().getBasePath())){
-                Constant.BASE_PATH = getProp().getServer().getBasePath();
-            }
-            this.webSiteBasePath = getBasePath(request);
-        }
-
     }
 
     //内置
     public void sendApidoc(Object response) throws SQLException, IOException {
-        if(this.webSiteUrl.contains("apidoc/add")){
+        if(this.webSiteUrl.contains("apidoc/add") || request.getMethod() == null){
             return;
         }
         String urlParam = request.getQueryString();
-        initFieldMap();
         apidoc = new Apidoc();
         apidoc.setU_project_uuid(getProp().getServer().getUuid());
         apidoc.setTitle(title);
@@ -137,17 +124,25 @@ public abstract class AbstractApidocAspect {
         apidoc.setContent_type(request.getContentType() == null ? "application/x-www-form-urlencoded" : request.getContentType());
         apidoc.setUrl_parameter(urlParam);
         apidoc.setParameter_examples(getShortMap(request, method));
-        if(response instanceof  String &&  response.toString().startsWith("[")){
-            apidoc.setResponse_examples(lessenArray(JSONArray.parseObject(JSONArray.toJSONString(response, SerializerFeature.WriteMapNullValue))));
-        }else if(response instanceof  String &&  response.toString().startsWith("{")){
-            apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
+        apidoc.setConfirmed("1");
+        if(getProp().getServer().getDictPath().contains(this.webSiteUrl)){
+            if(response instanceof  String &&  response.toString().startsWith("[")){
+                apidoc.setResponse_examples(JSONArray.toJSONString(response, SerializerFeature.WriteMapNullValue));
+            }else if(response instanceof  String &&  response.toString().startsWith("{")){
+                apidoc.setResponse_examples(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue));
+            }else{
+                apidoc.setResponse_examples(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue));
+            }
         }else{
-            apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
+            if(response instanceof  String &&  response.toString().startsWith("[")){
+                apidoc.setResponse_examples(lessenArray(JSONArray.parseObject(JSONArray.toJSONString(response, SerializerFeature.WriteMapNullValue))));
+            }else if(response instanceof  String &&  response.toString().startsWith("{")){
+                apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
+            }else{
+                apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
+            }
         }
-
-        setParameterList(apidoc);
-        setResponseList(apidoc);
-        new Sender(apidoc).start();
+        SpringUtil.getBean(SenderServiceImpl.class).send(apidoc);
     }
 
     public Prop getProp() {
@@ -155,24 +150,6 @@ public abstract class AbstractApidocAspect {
             prop = SpringUtil.getBean(Prop.class);
         }
         return prop;
-    }
-
-    //内置
-    private void setParameterList(Apidoc apidoc) {
-        if (!JSONUtil.isJson(apidoc.getParameter_examples())){
-            return;
-        }
-        JSONObject json = JSONObject.parseObject(apidoc.getParameter_examples());
-        setJSONObjectFieldMemo(json, "parameter", 0);
-    }
-
-    //内置
-    private void setResponseList(Apidoc apidoc) {
-        if (!JSONUtil.isJson(apidoc.getResponse_examples())) {
-            return;
-        }
-        JSONObject json = JSONObject.parseObject(apidoc.getResponse_examples());
-        setJSONObjectFieldMemo(json, "response", 0);
     }
 
     //内置
@@ -198,156 +175,9 @@ public abstract class AbstractApidocAspect {
     }
 
     //内置
-    private String getBasePath(HttpServletRequest request) {
+    public static String getBasePath(HttpServletRequest request) {
         return request.getRequestURL().substring(0, request.getRequestURL().length() - request.getRequestURI().length()) + "/";
-    }
-
-    ;
-
-    //内置
-    private void initFieldMap() {
-        for (int i = 0; i < column.size(); i++) {
-            Map col = column.get(i);
-            String column_name = (String) col.get("column_name");
-            if (!fieldMap.containsKey(column_name)) {
-                fieldMap.put(column_name, new ArrayList<>());
-            }
-            fieldMap.get(column_name).add(col);
-        }
-    }
-
-    ;
-
-    //内置
-    private void setJSONObjectFieldMemo(JSONObject json, String type, int level) {
-        if (json == null) {
-            return;
-        }
-        Iterator keySet = json.keySet().iterator();
-        while (keySet.hasNext()) {
-            Object key = keySet.next();
-            if (!(key instanceof String)) {
-                continue;
-            }
-            Object val = json.get(key);
-            if (val instanceof JSONObject) {
-                setJSONObjectFieldMemo((JSONObject) val, type, level + 1);
-            } else if (val instanceof JSONArray) {
-                setJSONArrayFieldMemo((JSONArray) val, type, level);
-            } else {
-                String lowerKey = ((String) key).toLowerCase().replaceAll("_", "");
-                if (fieldMap.containsKey(lowerKey)) {
-                    Map column = getColumn(json, lowerKey);
-                    if (column == null) {
-                        continue;
-                    }
-                    if (type.endsWith("response")) {
-                        addApidocResponse((String) key, (String) column.get("column_comment"), (String) column.get("column_type"), level + key.toString());
-                    } else if (type.endsWith("parameter")) {
-                        addApidocParameter((String) key, (String) column.get("column_comment"), (String) column.get("column_type"), level + key.toString());
-                    }
-                } else {
-                    if (type.endsWith("response")) {
-                        addApidocResponse((String) key, "", "", level + key.toString());
-                    } else if (type.endsWith("parameter")) {
-                        addApidocParameter((String) key, "", "", level + key.toString());
-                    }
-                }
-            }
-        }
-    }
-
-    //内置(String)column.get("column_comment")    (String)column.get("column_type")
-    private void addApidocResponse(String key, String field_name, String type, String full_key) {
-        if ("isFromApidoc".equals(key)) {
-            return;
-        }
-        ApidocFieldDict par = new ApidocFieldDict();
-        par.setField(key);
-        par.setType(type);
-        par.setGlobal("2");
-        par.setName(field_name);
-        par.setUse_features("1");
-        par.setData_type("2");
-        par.setFull_key(full_key);
-        par.setAuto_insert("1");
-        apidoc.getApidocResponse().add(par);
-    }
-
-    //内置
-    private void addApidocParameter(String key, String field_name, String type, String full_key) {
-        if ("isFromApidoc".equals(key)) {
-            return;
-        }
-        ApidocFieldDict par = new ApidocFieldDict();
-        par.setField(key);
-        par.setType(type);
-        par.setGlobal("2");
-        par.setName(field_name);
-        par.setUse_features("1");
-        par.setData_type("1");
-        par.setAuto_insert("1");
-        par.setFull_key(full_key);
-        apidoc.getApidocParameter().add(par);
-
-    }
-
-    //内置
-    private Map getColumn(JSONObject json, String lowerKey) {
-        Iterator keySet = json.keySet().iterator();
-        List<String> keyList = new ArrayList<>();
-        while (keySet.hasNext()) {
-            Object key = keySet.next();
-            if (!(key instanceof String)) {
-                continue;
-            }
-            String k = ((String) key).replaceAll("_", "").toLowerCase();
-            keyList.add(k);
-        }
-        Map<String, List<Map>> tableColumn = new HashMap<>();
-        int highestTotal = 0;
-        String highestTable = null;
-        for (int i = 0; i < column.size(); i++) {
-            Map col = column.get(i);
-            String table_name = (String) col.get("table_name");
-            if (!tableColumn.containsKey(table_name)) {
-                tableColumn.put(table_name, new ArrayList());
-            }
-            tableColumn.get(table_name).add(col);
-            if (i == column.size() - 1 || !column.get(i + 1).get("table_name").equals(table_name)) {
-                List cols = tableColumn.get(table_name);
-                int total = 0;
-                for (int j = 0; j < cols.size(); j++) {
-                    Map col_ = (Map) cols.get(j);
-                    if (keyList.contains(col_.get("column_name"))) {
-                        total++;
-                    }
-                }
-                if (total > highestTotal) {
-                    highestTotal = total;
-                    highestTable = table_name;
-                }
-            }
-        }
-        List cols = tableColumn.get(highestTable);
-        for (int i = 0; i < cols.size(); i++) {
-            if (((Map) cols.get(i)).get("column_name").equals(lowerKey)) {
-                return (Map) cols.get(i);
-            }
-        }
-        return null;
-    }
-
-    //内置
-    private void setJSONArrayFieldMemo(JSONArray json, String type, int level) {
-        if (json == null || json.size() < 1) {
-            return;
-        }
-        Object val = json.get(0);
-        if (val instanceof JSONObject) {
-            setJSONObjectFieldMemo((JSONObject) val, type, level + 1);
-        }
-    }
+    };
 
     //内置
     public String getShortMap(HttpServletRequest req, Method method) throws IOException {
