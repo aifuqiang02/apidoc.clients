@@ -125,23 +125,14 @@ public abstract class AbstractApidocAspect {
         apidoc.setUrl_parameter(urlParam);
         apidoc.setParameter_examples(getShortMap(request, method));
         apidoc.setConfirmed("1");
-        if(getProp().getServer().getDictPath().contains(this.webSiteUrl)){
-            if(response instanceof  String &&  response.toString().startsWith("[")){
-                apidoc.setResponse_examples(JSONArray.toJSONString(response, SerializerFeature.WriteMapNullValue));
-            }else if(response instanceof  String &&  response.toString().startsWith("{")){
-                apidoc.setResponse_examples(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue));
-            }else{
-                apidoc.setResponse_examples(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue));
-            }
+        if(response instanceof  String &&  response.toString().startsWith("[")){
+            apidoc.setResponse_examples(lessenArray(JSONArray.parseObject(JSONArray.toJSONString(response, SerializerFeature.WriteMapNullValue))));
+        }else if(response instanceof  String &&  response.toString().startsWith("{")){
+            apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
         }else{
-            if(response instanceof  String &&  response.toString().startsWith("[")){
-                apidoc.setResponse_examples(lessenArray(JSONArray.parseObject(JSONArray.toJSONString(response, SerializerFeature.WriteMapNullValue))));
-            }else if(response instanceof  String &&  response.toString().startsWith("{")){
-                apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
-            }else{
-                apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
-            }
+            apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
         }
+
         SpringUtil.getBean(SenderServiceImpl.class).send(apidoc);
     }
 

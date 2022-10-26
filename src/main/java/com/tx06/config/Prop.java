@@ -20,7 +20,7 @@ public class Prop {
     public static class Server {
         private String run;
         private String basePath;
-        private String dictPath;
+        private String dictSql;
         private String uuid;
         public boolean getRun() {
             if(StrUtil.isNotEmpty(run)){

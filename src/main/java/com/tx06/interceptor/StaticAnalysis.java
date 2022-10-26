@@ -40,6 +40,7 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
     public void run(String... args) throws Exception {
         init();
         rsycnFieldComment();
+        rsyncDict();
         start();
         log.debug("StaticAnalysis 执行完成");
     }
@@ -65,6 +66,17 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
             r.put("data_type","3");
         });
         SpringUtil.getBean(SenderServiceImpl.class).rsycnFieldComment(columns);
+    }
+
+    private void rsyncDict() throws SQLException {
+        log.debug("同步数据库字段备注");
+        String sql = getProp().server.getDictSql();
+        if(sql == null)return;
+        List<Map<String,Object>> columns = jdbcTemplate.queryForList(sql);
+        columns.stream().forEach(r->{
+            r.put("u_project_uuid",this.u_project_uuid);
+        });
+        SpringUtil.getBean(SenderServiceImpl.class).rsyncDict(columns);
     }
 
 
