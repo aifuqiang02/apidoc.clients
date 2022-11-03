@@ -47,6 +47,9 @@
         <xenon.version>1.0.0</xenon.version>
         <java.version>1.8</java.version>
         <spring.boot.version>2.3.2.RELEASE</spring.boot.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <dependencies>
         <dependency>
@@ -88,7 +91,6 @@
             <version>5.2.8.RELEASE</version>
         </dependency>
     </dependencies>
-
     <profiles>
         <profile>
             <id>release</id>
@@ -96,7 +98,7 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-compiler-plugin</artifactId>
-                        <version>2.3.2</version>
+                        <version>3.2</version>
                         <configuration>
                             <source>1.8</source>
                             <target>1.8</target>

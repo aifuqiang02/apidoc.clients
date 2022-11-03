@@ -25,7 +25,10 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.sql.SQLException;
 import java.util.*;
@@ -78,7 +81,6 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
         });
         SpringUtil.getBean(SenderServiceImpl.class).rsyncDict(columns);
     }
-
 
     public void start() throws InstantiationException, IllegalAccessException, IOException {
         log.debug("同步新增的接口");

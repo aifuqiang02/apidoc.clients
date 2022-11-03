@@ -15,9 +15,12 @@ import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.RequestWrapper;
@@ -25,6 +28,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
@@ -94,7 +98,7 @@ public abstract class AbstractApidocAspect {
 
     protected boolean checkCanSend(){
         if(this.fullTitle == null)return false;
-        if(this.request == null || this.request.getParameter("isFromApidoc") == null)return false;
+        if(this.request == null)return false;
         return true;
     }
 
@@ -106,7 +110,7 @@ public abstract class AbstractApidocAspect {
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
         this.request = attributes.getRequest();
         this.method = methodSignature.getMethod();
-        this.webSiteUrl = getUrl(request);
+        this.webSiteUrl = getUrl(this.method,request);
     }
 
     //内置
@@ -179,7 +183,7 @@ public abstract class AbstractApidocAspect {
             if ("post".equals(methodStr) && req instanceof RequestWrapper) {
                 String requestParam = getBodyString(req);
                 return requestParam;
-            }else if("post".equals(methodStr) && req.getClass().getName().contains("RepeatedlyRequestWrapper") &&  this.apidoc.getContent_type()!=null && this.apidoc.getContent_type().equals("application/json")){
+            }else if("post".equals(methodStr) && req.getClass().getName().contains("RepeatedlyRequestWrapper") &&  this.apidoc.getContent_type()!=null && this.apidoc.getContent_type().toLowerCase().contains("application/json")){
                 String requestParam = getBodyString(req);
                 return requestParam;
             } else {
@@ -235,9 +239,43 @@ public abstract class AbstractApidocAspect {
         return sb.toString().trim();
     }
 
-    public String getUrl(HttpServletRequest request) {
-        String basepath = getBasePath(request);
-        String url = request.getRequestURL().toString().substring(basepath.length());
+    public String getUrl(Method method,HttpServletRequest request) {
+        Annotation[] annotations = method.getAnnotations();
+        String val = "";
+        for(int i=0;i<annotations.length;i++){
+            Annotation annotation = annotations[i];
+            try {
+                if(annotation instanceof GetMapping){
+                    val = ((GetMapping)annotation).value()[0];
+                }else if(annotation instanceof PostMapping){
+                    val = ((PostMapping)annotation).value()[0];
+                }else if(annotation instanceof RequestMapping){
+                    val = ((RequestMapping)annotation).value()[0];
+                }else if(annotation instanceof DeleteMapping){
+                    val = ((DeleteMapping)annotation).value()[0];
+                }else if(annotation instanceof PutMapping){
+                    val = ((PutMapping)annotation).value()[0];
+                }
+            }catch (Exception e){
+            }
+        }
+        String url = "";
+        if(!val.contains("{")){
+            String basepath = getBasePath(request);
+            url = request.getRequestURL().toString().substring(basepath.length());
+        }else {
+            RequestMappingHandlerMapping mapping = SpringUtil.getBean(RequestMappingHandlerMapping.class);
+            // 拿到Handler适配器中的所有方法
+            Map<RequestMappingInfo, HandlerMethod> methodMap = mapping.getHandlerMethods();
+            for (RequestMappingInfo info : methodMap.keySet()) {
+                Method handlerMethod = methodMap.get(info).getMethod();
+                if (handlerMethod.equals(method)) {
+                    Set<String> patterns = info.getPatternsCondition().getPatterns();
+                    url = patterns.toArray(new String[patterns.size()])[0];
+                    break;
+                }
+            }
+        }
         while (url.startsWith("/")) {
             url = url.substring(1);
         }
