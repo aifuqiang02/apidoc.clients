@@ -1,5 +1,6 @@
 package com.tx06.interceptor;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
@@ -115,29 +116,33 @@ public abstract class AbstractApidocAspect {
 
     //内置
     public void sendApidoc(Object response) throws SQLException, IOException {
-        if(this.webSiteUrl.contains("apidoc/add") || request.getMethod() == null){
-            return;
-        }
-        String urlParam = request.getQueryString();
-        apidoc = new Apidoc();
-        apidoc.setU_project_uuid(getProp().getServer().getUuid());
-        apidoc.setTitle(title);
-        apidoc.setFull_title(this.fullTitle);
-        apidoc.setUrl(this.webSiteUrl);
-        apidoc.setMethod(this.requestMethod);
-        apidoc.setContent_type(request.getContentType() == null ? "application/x-www-form-urlencoded" : request.getContentType());
-        apidoc.setUrl_parameter(urlParam);
-        apidoc.setParameter_examples(getShortMap(request, method));
-        apidoc.setConfirmed("1");
-        if(response instanceof  String &&  response.toString().startsWith("[")){
-            apidoc.setResponse_examples(lessenArray(JSONArray.parseObject(JSONArray.toJSONString(response, SerializerFeature.WriteMapNullValue))));
-        }else if(response instanceof  String &&  response.toString().startsWith("{")){
-            apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
-        }else{
-            apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
-        }
+        try {
+            if (this.webSiteUrl.contains("apidoc/add") || request.getMethod() == null) {
+                return;
+            }
+            String urlParam = request.getQueryString();
+            apidoc = new Apidoc();
+            apidoc.setU_project_uuid(getProp().getServer().getUuid());
+            apidoc.setTitle(title);
+            apidoc.setFull_title(this.fullTitle);
+            apidoc.setUrl(this.webSiteUrl);
+            apidoc.setMethod(this.requestMethod);
+            apidoc.setContent_type(request.getContentType() == null ? "application/x-www-form-urlencoded" : request.getContentType());
+            apidoc.setUrl_parameter(urlParam);
+            apidoc.setParameter_examples(getShortMap(request, method));
+            apidoc.setConfirmed("1");
+            if (response instanceof String && response.toString().startsWith("[")) {
+                apidoc.setResponse_examples(lessenArray(JSONArray.parseObject(JSONArray.toJSONString(response, SerializerFeature.WriteMapNullValue))));
+            } else if (response instanceof String && response.toString().startsWith("{")) {
+                apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
+            } else {
+                apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
+            }
 
-        SpringUtil.getBean(SenderServiceImpl.class).send(apidoc);
+            SpringUtil.getBean(SenderServiceImpl.class).send(apidoc);
+        }catch (Exception e){
+            log.error(ExceptionUtil.stacktraceToString(e));
+        }
     }
 
     public Prop getProp() {
