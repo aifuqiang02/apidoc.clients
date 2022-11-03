@@ -21,7 +21,7 @@ tx06:
     
 3、使用@RestController("api接口") 注解，并增加中文说明  
 
-4、方法映射使用以下3个，且增加name
+4、方法映射使用以下3个，且增加name1
     @RequestMapping(value="/add",name="")   
     @GetMapping(value="/add",name="")   
     @PostMapping(value="/add",name="")
