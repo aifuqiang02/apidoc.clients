@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.tx06.config.Constant;
-import com.tx06.config.Prop;
+import com.tx06.config.ApiDocProp;
 import com.tx06.entity.Apidoc;
 import com.tx06.request.SenderServiceImpl;
 import org.apache.commons.logging.Log;
@@ -25,10 +25,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.sql.SQLException;
 import java.util.*;
@@ -50,9 +47,9 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
 
     private void init() throws SQLException {
         log.debug("开始初始化");
-        this.u_project_uuid = SpringUtil.getBean(Prop.class).getServer().getUuid();
-        if(!StrUtil.isEmpty(getProp().getServer().getBasePath())){
-            Constant.BASE_PATH = getProp().getServer().getBasePath();
+        this.u_project_uuid = SpringUtil.getBean(ApiDocProp.class).getServer().getUuid();
+        if(!StrUtil.isEmpty(getApiDocProp().getServer().getBasePath())){
+            Constant.BASE_PATH = getApiDocProp().getServer().getBasePath();
         }
         AbstractApidocAspect.jdbcTemplate = SpringUtil.getBean(JdbcTemplate.class);
     }
@@ -73,7 +70,7 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
 
     private void rsyncDict() throws SQLException {
         log.debug("同步数据库字段备注");
-        String sql = getProp().server.getDictSql();
+        String sql = getApiDocProp().server.getDictSql();
         if(sql == null)return;
         List<Map<String,Object>> columns = jdbcTemplate.queryForList(sql);
         columns.stream().forEach(r->{
@@ -99,7 +96,7 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
             String url = patterns.toArray(new String[patterns.size()])[0];
 
             if(restController == null || StrUtil.isEmpty(restController.value()) || StrUtil.isEmpty(info.getName()) || alreadLines.contains(url))continue;
-            api.setU_project_uuid(getProp().getServer().getUuid());
+            api.setU_project_uuid(getApiDocProp().getServer().getUuid());
             api.setConfirmed("2");
             setMethodType(handlerMethod,api);
             setUrlTitle( handlerMethod, info, api);

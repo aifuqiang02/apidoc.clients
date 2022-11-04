@@ -13,7 +13,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "tx06")
 @Component
 @Data
-public class Prop {
+public class ApiDocProp {
     public Server server = new Server();
 
     @Data
