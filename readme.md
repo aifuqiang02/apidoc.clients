@@ -26,3 +26,6 @@ tx06:
     @GetMapping(value="/add",name="")   
     @PostMapping(value="/add",name="")
 ```
+
+##其他文档
+[环境部署](./wiki/环境部署)
