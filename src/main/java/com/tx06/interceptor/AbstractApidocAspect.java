@@ -3,12 +3,11 @@ package com.tx06.interceptor;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.tx06.config.Prop;
+import com.tx06.config.ApiDocProp;
 import com.tx06.entity.Apidoc;
 import com.tx06.request.SenderServiceImpl;
 import org.apache.commons.logging.Log;
@@ -53,7 +52,7 @@ public abstract class AbstractApidocAspect {
     public static JdbcTemplate jdbcTemplate;
     protected static String dbName;
     protected String requestMethod;
-    protected Prop prop;
+    protected ApiDocProp apiDocProp;
     /**
      * 1、判断接口文档是否更新
      *    配置文件run == true  运行。
@@ -64,7 +63,7 @@ public abstract class AbstractApidocAspect {
         if(run != null){
             return run;
         }else{
-            run = getProp().getServer().getRun();
+            run = getApiDocProp().getServer().getRun();
         }
         return run;
     }
@@ -122,7 +121,7 @@ public abstract class AbstractApidocAspect {
             }
             String urlParam = request.getQueryString();
             apidoc = new Apidoc();
-            apidoc.setU_project_uuid(getProp().getServer().getUuid());
+            apidoc.setU_project_uuid(getApiDocProp().getServer().getUuid());
             apidoc.setTitle(title);
             apidoc.setFull_title(this.fullTitle);
             apidoc.setUrl(this.webSiteUrl);
@@ -145,11 +144,11 @@ public abstract class AbstractApidocAspect {
         }
     }
 
-    public Prop getProp() {
-        if(prop == null){
-            prop = SpringUtil.getBean(Prop.class);
+    public ApiDocProp getApiDocProp() {
+        if(apiDocProp == null){
+            apiDocProp = SpringUtil.getBean(ApiDocProp.class);
         }
-        return prop;
+        return apiDocProp;
     }
 
     //内置

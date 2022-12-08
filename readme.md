@@ -1,28 +1,46 @@
-##哪些项目可以使用
-```
-  1、项目是springboot 项目。
-     
-```
-##引用
-```
-1、pom.xml 中增加配置
-<dependency>
-  <groupId>com.tx06</groupId>
-  <artifactId>apidoc.clients</artifactId>
-  <version>1.0-SNAPSHOT</version>
-</dependency>
+# 介绍
+## <center> apiDoc  
+<center>非入侵自动生成API接口文档系统</center>
 
-2、application.yml 增加以下配置
-tx06: 
-  server: 
-    basePath: http://127.0.0.1/x-apidoc/   #可不配置,默认https://a.tx06.com/
-    uuid: 9d43d986-0922-41c4-9d46-d5b1a3547983  #项目uuid , 在https://a.tx06.com/系统中创建
-    dictPath: system/dict/type/dataDict  #字典接口地址  
-    
-3、使用@RestController("api接口") 注解，并增加中文说明  
+> 提示 
+> 一直想做一款API接口管理系统，看了很多优秀的开源项目但是发现没有合适的。于是利用空闲休息时间开始自己写了一套接口管理系统。如此有了apiDoc。
 
-4、方法映射使用以下3个，且增加name1
-    @RequestMapping(value="/add",name="")   
-    @GetMapping(value="/add",name="")   
-    @PostMapping(value="/add",name="")
+如需apiDoc 内网版，请联系群主  
+
+**apiDoc**是一个api管理系统，基于经典技术组合（Spring Boot）主要目的让开发者注重专注业务，减少因api增加的冗余代码，方便快捷的自动生成api，从而节省人力成本，缩短项目周期。
+
+#### 优点 
+- 无需像使用Swagger，在项目里增加超多注解
+- 项目启动自动生成API文档
+- 集成简单
+- 可自定义api目录
+
+#### 哪些项目可以使用
+  ```solidity
+     1、项目是springboot + mybatis + mysql 项目
+  ```
+
+#### 文档效果
+
+![](../../wiki/images/84303f2c.png) 
+
+#### 在线体验
+
+演示地址：[https://a.tx06.com/](https://a.tx06.com/apidoc/view/index.html)  
+```solidity
+    测试账号：18392447939   
+    密码：123456
 ```
+
+#### 系统需求
+
+- JDK >= 1.8 
+- springboot >= 1.8 
+- MySQL >= 5.7 
+ 
+#### 其他文档
+
+- [环境部署](../../wiki/环境部署)
+- [获取项目UUID](../../wiki/获取项目UUID)
+
+ 
