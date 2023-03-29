@@ -100,7 +100,7 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
             if(restController == null || StrUtil.isEmpty(restController.value()) || StrUtil.isEmpty(info.getName()) || alreadLines.contains(url)){
                 continue;
             }
-            api.setUProjectUuid(getApiDocProp().getServer().getUuid());
+            api.setProjectUuid(getApiDocProp().getServer().getUuid());
             api.setConfirmed("2");
             setMethodType(handlerMethod,api);
             setUrlTitle( handlerMethod, info, api);

@@ -39,6 +39,7 @@ public class GetAspect extends AbstractApidocAspect{
         return ret;
     }
 
+    @Override
     protected String getMethodName() {
         this.requestMethod = RequestMethod.GET.name();
         return method.getAnnotation(GetMapping.class).name();

@@ -5,17 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5521d1ec-ee4f-4640-b699-496f19230282" name="Default" comment="11111">
-      <change afterPath="$PROJECT_DIR$/target/apidoc.clients-1.0.8.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/tx06/config/ApidocThreadPoolConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/tx06/interceptor/StaticAnalysis.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/tx06/request/SenderServiceImpl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Apidoc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Apidoc.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/AbstractApidocAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/AbstractApidocAspect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/GetAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/GetAspect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/PostAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/PostAspect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/RequestAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/RequestAspect.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -303,7 +298,7 @@
       <workItem from="1673837588864" duration="6298000" />
       <workItem from="1677134823910" duration="22000" />
       <workItem from="1680053073521" duration="2256000" />
-      <workItem from="1680057006982" duration="369000" />
+      <workItem from="1680057006982" duration="2255000" />
     </task>
     <task id="LOCAL-00001" summary="11111">
       <created>1664110071348</created>
@@ -410,7 +405,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670477229786</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="11111">
+      <created>1680057398912</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1680057398912</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
