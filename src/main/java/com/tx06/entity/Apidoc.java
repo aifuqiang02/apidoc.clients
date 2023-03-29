@@ -16,18 +16,18 @@ public class Apidoc {
     /**
      * 所属用户
      */
-    private Integer u_member_id;
+    private Integer uMemberId;
 
     /**
      * 所属项目
      */
-    private String u_project_uuid;
+    private String uProjectUuid;
     private String version;
 
     /**
      * 所属目录
      */
-    private Integer u_apidoc_menu_id;
+    private Integer uApiDocMenuId;
 
     /**
      * 标题
@@ -37,24 +37,24 @@ public class Apidoc {
     /**
      * 完整标题
      */
-    private String full_title;
+    private String fullTitle;
 
     /**
      * 访问请求地址
      */
     private String url;
 
-    private String context_path;
+    private String contextPath;
 
     /**
      * 访问请求地址参数
      */
-    private String url_parameter;
+    private String urlParameter;
 
     /**
      * 请求示例参数
      */
-    private String parameter_examples;
+    private String parameterExamples;
     /**
      * 智能识别参数+用户自定义参数
      */
@@ -68,7 +68,7 @@ public class Apidoc {
     /**
      * 返回结果示例
      */
-    private String response_examples;
+    private String responseExamples;
 
     /**
      * 智能识别返回结果+用户自定义返回结果
@@ -92,12 +92,12 @@ public class Apidoc {
     /**
      * 内容类型
      */
-    private String content_type;
+    private String contentType;
 
     /**
      * 创建时间
      */
-    private String createtime;
+    private String createTime;
     /**
      * 是否已确认  1是2否
      */
@@ -106,7 +106,7 @@ public class Apidoc {
     /**
      * 无备注字段的个数
      */
-    private Integer no_tips_field_count;
+    private Integer noTipsFieldCount;
 
     /**
      * 字段的个数
