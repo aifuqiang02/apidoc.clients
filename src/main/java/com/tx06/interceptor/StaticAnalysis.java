@@ -71,7 +71,9 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
     private void rsyncDict() throws SQLException {
         log.debug("同步数据库字段备注");
         String sql = getApiDocProp().server.getDictSql();
-        if(sql == null)return;
+        if(sql == null){
+            return;
+        }
         List<Map<String,Object>> columns = jdbcTemplate.queryForList(sql);
         columns.stream().forEach(r->{
             r.put("u_project_uuid",this.u_project_uuid);
@@ -95,8 +97,10 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
             Set<String> patterns = info.getPatternsCondition().getPatterns();
             String url = patterns.toArray(new String[patterns.size()])[0];
 
-            if(restController == null || StrUtil.isEmpty(restController.value()) || StrUtil.isEmpty(info.getName()) || alreadLines.contains(url))continue;
-            api.setU_project_uuid(getApiDocProp().getServer().getUuid());
+            if(restController == null || StrUtil.isEmpty(restController.value()) || StrUtil.isEmpty(info.getName()) || alreadLines.contains(url)){
+                continue;
+            }
+            api.setUProjectUuid(getApiDocProp().getServer().getUuid());
             api.setConfirmed("2");
             setMethodType(handlerMethod,api);
             setUrlTitle( handlerMethod, info, api);
@@ -110,7 +114,7 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
 
 
     private void setResponse(HandlerMethod handlerMethod,Apidoc apidoc) throws IllegalAccessException, InstantiationException {
-        apidoc.setResponse_examples(JSON.toJSONString(newInstance( handlerMethod.getMethod().getReturnType())));
+        apidoc.setResponseExamples(JSON.toJSONString(newInstance( handlerMethod.getMethod().getReturnType())));
     }
 
     private void setParameters(HandlerMethod handlerMethod,Apidoc apidoc) throws IllegalAccessException, InstantiationException {
@@ -148,7 +152,7 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
                 }
             }
         }
-        apidoc.setParameter_examples(JSON.toJSONString(parameterExamples, SerializerFeature.WriteMapNullValue));
+        apidoc.setParameterExamples(JSON.toJSONString(parameterExamples, SerializerFeature.WriteMapNullValue));
     }
 
     private JSONObject newInstance(Class c){
@@ -172,7 +176,7 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
         String controllerName = restController.value();
         String methodName = info.getName();
         apidoc.setTitle(methodName);
-        apidoc.setFull_title((controllerName+"/"+methodName));
+        apidoc.setFullTitle((controllerName+"/"+methodName));
     }
 
     /**
@@ -182,11 +186,11 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
         boolean hasRequestBody = hasRequestBody(handlerMethod);
         boolean hasFile = hasMultipartFile(handlerMethod);
         if(hasRequestBody){
-            apidoc.setContent_type(MediaType.APPLICATION_JSON_VALUE);
+            apidoc.setContentType(MediaType.APPLICATION_JSON_VALUE);
         }else if(hasFile){
-            apidoc.setContent_type(MediaType.MULTIPART_FORM_DATA_VALUE);
+            apidoc.setContentType(MediaType.MULTIPART_FORM_DATA_VALUE);
         }else{
-            apidoc.setContent_type(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+            apidoc.setContentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
         }
         if(handlerMethod.getMethodAnnotation(RequestMapping.class) != null){
             apidoc.setMethod(hasRequestBody ? "POST" : "GET");

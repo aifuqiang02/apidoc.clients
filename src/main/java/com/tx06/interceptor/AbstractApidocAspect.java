@@ -97,8 +97,12 @@ public abstract class AbstractApidocAspect {
     }
 
     protected boolean checkCanSend(){
-        if(this.fullTitle == null)return false;
-        if(this.request == null)return false;
+        if(this.fullTitle == null){
+            return false;
+        }
+        if(this.request == null){
+            return false;
+        }
         return true;
     }
 
@@ -121,21 +125,21 @@ public abstract class AbstractApidocAspect {
             }
             String urlParam = request.getQueryString();
             apidoc = new Apidoc();
-            apidoc.setU_project_uuid(getApiDocProp().getServer().getUuid());
+            apidoc.setUProjectUuid(getApiDocProp().getServer().getUuid());
             apidoc.setTitle(title);
-            apidoc.setFull_title(this.fullTitle);
+            apidoc.setFullTitle(this.fullTitle);
             apidoc.setUrl(this.webSiteUrl);
             apidoc.setMethod(this.requestMethod);
-            apidoc.setContent_type(request.getContentType() == null ? "application/x-www-form-urlencoded" : request.getContentType());
-            apidoc.setUrl_parameter(urlParam);
-            apidoc.setParameter_examples(getShortMap(request, method));
+            apidoc.setContentType(request.getContentType() == null ? "application/x-www-form-urlencoded" : request.getContentType());
+            apidoc.setUrlParameter(urlParam);
+            apidoc.setParameterExamples(getShortMap(request, method));
             apidoc.setConfirmed("1");
             if (response instanceof String && response.toString().startsWith("[")) {
-                apidoc.setResponse_examples(lessenArray(JSONArray.parseObject(JSONArray.toJSONString(response, SerializerFeature.WriteMapNullValue))));
+                apidoc.setResponseExamples(lessenArray(JSONArray.parseObject(JSONArray.toJSONString(response, SerializerFeature.WriteMapNullValue))));
             } else if (response instanceof String && response.toString().startsWith("{")) {
-                apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
+                apidoc.setResponseExamples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
             } else {
-                apidoc.setResponse_examples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
+                apidoc.setResponseExamples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
             }
 
             SpringUtil.getBean(SenderServiceImpl.class).send(apidoc);
@@ -187,7 +191,7 @@ public abstract class AbstractApidocAspect {
             if ("post".equals(methodStr) && req instanceof RequestWrapper) {
                 String requestParam = getBodyString(req);
                 return requestParam;
-            }else if("post".equals(methodStr) && req.getClass().getName().contains("RepeatedlyRequestWrapper") &&  this.apidoc.getContent_type()!=null && this.apidoc.getContent_type().toLowerCase().contains("application/json")){
+            }else if("post".equals(methodStr) && req.getClass().getName().contains("RepeatedlyRequestWrapper") &&  this.apidoc.getContentType()!=null && this.apidoc.getContentType().toLowerCase().contains("application/json")){
                 String requestParam = getBodyString(req);
                 return requestParam;
             } else {
