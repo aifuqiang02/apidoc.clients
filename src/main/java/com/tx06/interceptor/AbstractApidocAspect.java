@@ -125,7 +125,7 @@ public abstract class AbstractApidocAspect {
             }
             String urlParam = request.getQueryString();
             apidoc = new Apidoc();
-            apidoc.setUProjectUuid(getApiDocProp().getServer().getUuid());
+            apidoc.setProjectUuid(getApiDocProp().getServer().getUuid());
             apidoc.setTitle(title);
             apidoc.setFullTitle(this.fullTitle);
             apidoc.setUrl(this.webSiteUrl);

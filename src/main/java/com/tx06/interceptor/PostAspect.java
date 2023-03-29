@@ -36,6 +36,7 @@ public class PostAspect extends AbstractApidocAspect{
         return ret;
     }
 
+    @Override
     protected String getMethodName() {
         this.requestMethod = RequestMethod.POST.name();
         return method.getAnnotation(PostMapping.class).name();

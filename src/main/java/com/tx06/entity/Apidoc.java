@@ -16,18 +16,18 @@ public class Apidoc {
     /**
      * 所属用户
      */
-    private Integer uMemberId;
+    private Integer memberId;
 
     /**
      * 所属项目
      */
-    private String uProjectUuid;
+    private String projectUuid;
     private String version;
 
     /**
      * 所属目录
      */
-    private Integer uApiDocMenuId;
+    private Integer apiDocMenuId;
 
     /**
      * 标题
