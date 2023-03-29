@@ -10,6 +10,12 @@
        中央仓库：https://search.maven.org/search?q=tx06
        nexus： https://s01.oss.sonatype.org/#view-repositories;releases~browsestorage
        密钥：FFE1BFA925A97E50456944EA4560DF4009022F91
+
+       发布流程
+       1、mvn clean deploy -P release
+       2、登录nexus 点击菜单Staging Repositories
+       3、选中复选框后，Close
+       4、等1分钟后，Release
     -->
 
     <artifactId>apidoc.clients</artifactId>
