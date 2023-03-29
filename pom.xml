@@ -14,8 +14,9 @@
        发布流程
        1、mvn clean deploy -P release
        2、登录nexus 点击菜单Staging Repositories
-       3、选中复选框后，Close
-       4、等1分钟后，Release
+       3、选中一项，Content/Delete 历史版本
+       4、选中复选框后，Close
+       5、等1分钟后，Release
     -->
 
     <artifactId>apidoc.clients</artifactId>
@@ -159,9 +160,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
