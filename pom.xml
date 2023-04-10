@@ -20,7 +20,7 @@
     -->
 
     <artifactId>apidoc.clients</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <groupId>com.tx06</groupId>
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -53,7 +53,7 @@
         <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
         <xenon.version>1.0.0</xenon.version>
         <java.version>1.8</java.version>
-        <spring.boot.version>2.3.2.RELEASE</spring.boot.version>
+        <spring.boot.version>2.5.12</spring.boot.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
