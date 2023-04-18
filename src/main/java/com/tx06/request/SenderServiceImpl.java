@@ -27,7 +27,7 @@ public class SenderServiceImpl {
         try {
             String param = JSON.toJSONString(apidoc);
 
-            String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apidoc/add?version="+VERSION,param);
+            String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apiDoc/add?version="+VERSION,param);
             JSONObject rs = JSON.parseObject(str);
             if(!rs.containsKey("code") || rs.getInteger("code").intValue()!=200){
                 log.error("apidoc 接口请求失败：" + rs.getString("msg"));
@@ -41,7 +41,7 @@ public class SenderServiceImpl {
         try {
             String param = JSON.toJSONString(list);
 
-            String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apidoc/rsycnFieldComment?version="+VERSION,param);
+            String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apiDoc/rsycnFieldComment?version="+VERSION,param);
             JSONObject rs = JSON.parseObject(str);
             if(!rs.containsKey("code") || rs.getInteger("code").intValue()!=200){
                 log.error("apidoc 接口请求失败：" + rs.getString("msg"));
@@ -55,7 +55,7 @@ public class SenderServiceImpl {
         try {
             String param = JSON.toJSONString(list);
 
-            String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apidoc/rsyncDict?version="+VERSION,param);
+            String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apiDoc/rsyncDict?version="+VERSION,param);
             JSONObject rs = JSON.parseObject(str);
             if(!rs.containsKey("code") || rs.getInteger("code").intValue()!=200){
                 log.error("apidoc 接口请求失败：" + rs.getString("msg"));
