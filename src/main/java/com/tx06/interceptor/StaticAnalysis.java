@@ -39,7 +39,8 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
     @Override
     public void run(String... args) throws Exception {
         init();
-        rsycnFieldComment();
+        tableCommentCheck();
+        rsyncFieldComment();
         rsyncDict();
         start();
         log.debug("StaticAnalysis 执行完成");
@@ -52,12 +53,23 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
             Constant.BASE_PATH = getApiDocProp().getServer().getBasePath();
         }
         AbstractApidocAspect.jdbcTemplate = SpringUtil.getBean(JdbcTemplate.class);
-    }
-
-    private void rsycnFieldComment() throws SQLException {
-        log.debug("同步数据库字段备注");
         String [] arr = AbstractApidocAspect.jdbcTemplate.getDataSource().getConnection().getMetaData().getURL().split("\\?")[0].split("/");
         dbName = arr[arr.length-1];
+    }
+
+    private void tableCommentCheck() throws SQLException {
+        log.debug("数据库表备注格式检查");
+        String sql = "select t.`table_name`,t.`table_comment` from `information_schema`.`TABLES` t where t.`TABLE_SCHEMA` = '"+dbName+"' and table_comment not like '%|%'";
+        List<Map<String,Object>> columns = jdbcTemplate.queryForList(sql);
+        columns.forEach(r->{
+            String tableName = (String) r.get("table_name");
+            String tableComment = (String) r.get("table_comment");
+            log.info(String.format("表%s 备注格式错误，期望controllerPath|tableComment，目前：%s", tableName, tableComment));
+        });
+    }
+
+    private void rsyncFieldComment() throws SQLException {
+        log.debug("同步数据库字段备注");
         String sql = "SELECT c.`COLUMN_NAME` AS field,c.`COLUMN_COMMENT` AS name FROM `information_schema`.`COLUMNS` c WHERE c.`TABLE_SCHEMA` = '" + dbName
                 + "'  AND c.column_comment IS NOT NULL AND c.column_comment != ''  GROUP BY c.column_name";
         List<Map<String,Object>> columns = jdbcTemplate.queryForList(sql);
@@ -75,7 +87,7 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
             return;
         }
         List<Map<String,Object>> columns = jdbcTemplate.queryForList(sql);
-        columns.stream().forEach(r->{
+        columns.forEach(r->{
             r.put("u_project_uuid",this.u_project_uuid);
         });
         SpringUtil.getBean(SenderServiceImpl.class).rsyncDict(columns);
