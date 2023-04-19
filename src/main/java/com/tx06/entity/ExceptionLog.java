@@ -10,6 +10,7 @@ import javax.lang.model.element.NestingKind;
 @Data
 public class ExceptionLog {
     private String reqId;
+    private String projectUuid;
     private String content;
     private String param;
     private String url;
