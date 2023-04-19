@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tx06.config.ApiDocProp;
 import com.tx06.entity.Apidoc;
+import com.tx06.entity.ExceptionLog;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -42,6 +43,21 @@ public class SenderServiceImpl {
             String param = JSON.toJSONString(list);
 
             String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apiDoc/rsycnFieldComment?version="+VERSION,param);
+            JSONObject rs = JSON.parseObject(str);
+            if(!rs.containsKey("code") || rs.getInteger("code").intValue()!=200){
+                log.error("apidoc 接口请求失败：" + rs.getString("msg"));
+            }
+        }catch (Exception e){
+            log.error("apidoc 接口请求失败：" + e.getMessage());
+        }
+    }
+
+
+    public void sendExceptionLog(ExceptionLog exceptionLog){
+        try {
+            String param = JSON.toJSONString(exceptionLog);
+
+            String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apiDoc/sendExceptionLog?version="+VERSION,param);
             JSONObject rs = JSON.parseObject(str);
             if(!rs.containsKey("code") || rs.getInteger("code").intValue()!=200){
                 log.error("apidoc 接口请求失败：" + rs.getString("msg"));
