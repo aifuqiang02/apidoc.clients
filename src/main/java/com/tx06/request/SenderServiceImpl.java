@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tx06.config.ApiDocProp;
 import com.tx06.entity.Apidoc;
-import com.tx06.entity.ExceptionLog;
+import com.tx06.entity.TMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -21,7 +21,7 @@ import static com.tx06.config.Constant.VERSION;
 @EnableAsync
 @Component
 public class SenderServiceImpl {
-    private Log log = LogFactory.getLog(SenderServiceImpl.class);
+    private final Log log = LogFactory.getLog(SenderServiceImpl.class);
 
     @Async("apidocTaskExecutor")
     public void send(Apidoc apidoc){
@@ -30,7 +30,7 @@ public class SenderServiceImpl {
 
             String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apiDoc/add?version="+VERSION,param);
             JSONObject rs = JSON.parseObject(str);
-            if(!rs.containsKey("code") || rs.getInteger("code").intValue()!=200){
+            if(!rs.containsKey("code") || rs.getInteger("code")!=200){
                 log.error("apidoc 接口请求失败：" + rs.getString("msg"));
             }
         }catch (Exception e){
@@ -44,7 +44,7 @@ public class SenderServiceImpl {
 
             String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apiDoc/rsycnFieldComment?version="+VERSION,param);
             JSONObject rs = JSON.parseObject(str);
-            if(!rs.containsKey("code") || rs.getInteger("code").intValue()!=200){
+            if(!rs.containsKey("code") || rs.getInteger("code")!=200){
                 log.error("apidoc 接口请求失败：" + rs.getString("msg"));
             }
         }catch (Exception e){
@@ -52,18 +52,16 @@ public class SenderServiceImpl {
         }
     }
 
-
-    public void sendExceptionLog(ExceptionLog exceptionLog){
+    public void sendMessage(TMessage message){
         try {
-            String param = JSON.toJSONString(exceptionLog);
-
-            String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/project/exceptionLog/doSave?version="+VERSION,param);
+            String param = JSON.toJSONString(message);
+            String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/business/message/doSave?version="+VERSION,param);
             JSONObject rs = JSON.parseObject(str);
-            if(!rs.containsKey("code") || rs.getInteger("code").intValue()!=200){
-                log.error("apidoc 接口请求失败：" + rs.getString("msg"));
+            if(!rs.containsKey("code") || rs.getInteger("code")!=200){
+                log.error("接口请求失败：" + rs.getString("msg"));
             }
         }catch (Exception e){
-            log.error("apidoc 接口请求失败：" + e.getMessage());
+            log.error("接口请求失败：" + e.getMessage());
         }
     }
 
@@ -73,7 +71,7 @@ public class SenderServiceImpl {
 
             String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apiDoc/rsyncDict?version="+VERSION,param);
             JSONObject rs = JSON.parseObject(str);
-            if(!rs.containsKey("code") || rs.getInteger("code").intValue()!=200){
+            if(!rs.containsKey("code") || rs.getInteger("code")!=200){
                 log.error("apidoc 接口请求失败：" + rs.getString("msg"));
             }
         }catch (Exception e){
