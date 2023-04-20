@@ -57,7 +57,7 @@ public class SenderServiceImpl {
         try {
             String param = JSON.toJSONString(exceptionLog);
 
-            String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apiDoc/sendExceptionLog?version="+VERSION,param);
+            String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/project/exceptionLog/doSave?version="+VERSION,param);
             JSONObject rs = JSON.parseObject(str);
             if(!rs.containsKey("code") || rs.getInteger("code").intValue()!=200){
                 log.error("apidoc 接口请求失败：" + rs.getString("msg"));

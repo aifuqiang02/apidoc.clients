@@ -12,7 +12,8 @@ public class ExceptionLog {
     private String reqId;
     private String projectUuid;
     private String content;
-    private String param;
+    private String optUser;
+    private String optPhone;
     private String url;
 
 }
