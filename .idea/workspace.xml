@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5521d1ec-ee4f-4640-b699-496f19230282" name="Default" comment="11111">
+    <list default="true" id="5521d1ec-ee4f-4640-b699-496f19230282" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -240,6 +242,9 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RebelAgentSelection">
+    <selection>jr</selection>
+  </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.tx06.request" />
@@ -320,6 +325,7 @@
       <workItem from="1680066207096" duration="892000" />
       <workItem from="1681716088493" duration="558000" />
       <workItem from="1681781070899" duration="351000" />
+      <workItem from="1685518631044" duration="2447000" />
     </task>
     <task id="LOCAL-00001" summary="11111">
       <created>1664110071348</created>
@@ -391,7 +397,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681781158633</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="11111">
+      <created>1685518670602</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1685518670602</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TimeTrackingManager">

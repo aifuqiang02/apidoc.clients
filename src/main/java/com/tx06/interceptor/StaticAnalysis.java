@@ -3,6 +3,8 @@ package com.tx06.interceptor;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -10,8 +12,6 @@ import com.tx06.config.Constant;
 import com.tx06.config.ApiDocProp;
 import com.tx06.entity.Apidoc;
 import com.tx06.request.SenderServiceImpl;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
@@ -33,7 +33,7 @@ import java.util.*;
 @Component
 @Order(value = 100)
 public class StaticAnalysis extends AbstractApidocAspect implements CommandLineRunner {
-    private Log log = LogFactory.getLog(StaticAnalysis.class);
+    private Log log = LogFactory.get(StaticAnalysis.class);
     private static LocalVariableTableParameterNameDiscoverer parameterNameDiscovere = new LocalVariableTableParameterNameDiscoverer();
 
     @Override
@@ -74,8 +74,8 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
                 + "'  AND c.column_comment IS NOT NULL AND c.column_comment != ''  GROUP BY c.column_name";
         List<Map<String,Object>> columns = jdbcTemplate.queryForList(sql);
         columns.stream().forEach(r->{
-            r.put("u_project_uuid",this.u_project_uuid);
-            r.put("data_type","3");
+            r.put("projectUuid",this.u_project_uuid);
+            r.put("dataType","3");
         });
         SpringUtil.getBean(SenderServiceImpl.class).rsycnFieldComment(columns);
     }
@@ -143,7 +143,7 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
                     try {
                         parameterExamples.putAll(newInstance(parameter.getType()));
                     }catch (Exception e){
-                        LogFactory.getLog("setParameters:").error(parameter.getType().getSimpleName() + "初始化失败,"+e.getMessage());
+                        log.error(parameter.getType().getSimpleName() + "初始化失败,"+e.getMessage());
                     }
                 }else{
                     if(BeanUtils.isSimpleProperty(parameter.getType())){//基本类型
@@ -171,7 +171,7 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
         try {
             return JSON.parseObject(JSON.toJSONString(c.newInstance(), SerializerFeature.WriteMapNullValue));
         } catch (Exception e) {
-            LogFactory.getLog("setParameters:").error(c.getSimpleName() + "初始化失败,"+e.getMessage());
+            log.error(c.getSimpleName() + "初始化失败,"+e.getMessage());
         }
         return new JSONObject();
     }
