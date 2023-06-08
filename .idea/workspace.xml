@@ -4,24 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5521d1ec-ee4f-4640-b699-496f19230282" name="Default" comment="11111">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/MappingHandleBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/MappingHandleFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/DefaultMappingHandle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/GetMappingHandle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/MappingHandle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/NullMappingHandle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/PostMappingHandle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/RequestMappingHandle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="5521d1ec-ee4f-4640-b699-496f19230282" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/exception/MessageConsumeQueue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/exception/MessageConsumeQueue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/AbstractApidocAspect.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/GetAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/ControllerRequestAspect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/PostAspect.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/RequestAspect.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/MappingHandleBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/MappingHandleBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/DefaultMappingHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/DefaultMappingHandle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/GetMappingHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/GetMappingHandle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/MappingHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/MappingHandle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/PostMappingHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/PostMappingHandle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/RequestMappingHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/RequestMappingHandle.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -344,7 +334,7 @@
       <workItem from="1681781070899" duration="351000" />
       <workItem from="1685518631044" duration="3194000" />
       <workItem from="1685675096515" duration="1991000" />
-      <workItem from="1686193303737" duration="10447000" />
+      <workItem from="1686193303737" duration="13033000" />
     </task>
     <task id="LOCAL-00001" summary="11111">
       <created>1664110071348</created>
@@ -430,7 +420,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685530324236</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="11111">
+      <created>1686207385776</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1686207385776</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TimeTrackingManager">

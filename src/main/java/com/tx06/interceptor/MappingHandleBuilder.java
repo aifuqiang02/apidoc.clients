@@ -1,5 +1,6 @@
 package com.tx06.interceptor;
 
+import cn.hutool.core.annotation.AnnotationProxy;
 import cn.hutool.extra.spring.SpringUtil;
 import com.tx06.config.ApiDocProp;
 import com.tx06.interceptor.handle.DefaultMappingHandle;
@@ -8,11 +9,14 @@ import com.tx06.interceptor.handle.NullMappingHandle;
 import lombok.Data;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -31,7 +35,8 @@ public class MappingHandleBuilder {
         RestController restController = pjp.getTarget().getClass().getAnnotation(RestController.class);
 
         Method method = methodSignature.getMethod();
-        RequestMapping mappingAnnotation = (RequestMapping) Arrays.stream(method.getAnnotations()).filter(annotation ->annotation instanceof RequestMapping
+        Annotation mappingAnnotation = Arrays.stream(method.getAnnotations()).filter(annotation ->
+             annotation.annotationType().getName().contains("org.springframework.web.bind.annotation")
         ).findAny().orElse(null);
 
         MappingHandleBuilder builder = new MappingHandleBuilder();

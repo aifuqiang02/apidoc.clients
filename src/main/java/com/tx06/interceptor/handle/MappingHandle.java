@@ -3,6 +3,7 @@ package com.tx06.interceptor.handle;
 import java.io.IOException;
 
 public interface MappingHandle {
+    public String getMappingValue();
     public void initMethodTitle();
     public void initFullTitle();
     public void initMethodType();

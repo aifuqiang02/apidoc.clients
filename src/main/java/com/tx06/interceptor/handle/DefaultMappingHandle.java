@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ import java.util.Set;
 public class DefaultMappingHandle implements MappingHandle{
   public ProceedingJoinPoint pjp;
   public Method method;
-  public RequestMapping requestMapping;
+  public Annotation requestMapping;
   public RestController restController;
   public Object response;
   public ApiDocProp prop;
@@ -39,8 +40,12 @@ public class DefaultMappingHandle implements MappingHandle{
   public Apidoc apidoc = new Apidoc();
 
   @Override
+  public String getMappingValue() {
+    return null;
+  }
+
+  @Override
   public void initMethodTitle() {
-    apidoc.setTitle(requestMapping.name());
   }
 
   @Override
@@ -51,7 +56,6 @@ public class DefaultMappingHandle implements MappingHandle{
 
   @Override
   public void initMethodType() {
-      apidoc.setMethod(requestMapping.method().toString());
   }
 
   @Override
@@ -101,7 +105,7 @@ public class DefaultMappingHandle implements MappingHandle{
 
 
   private String getUrl() {
-    String val = requestMapping.value()[0];
+    String val = this.getMappingValue();
 
     String url = "";
     if(!val.contains("{")){
