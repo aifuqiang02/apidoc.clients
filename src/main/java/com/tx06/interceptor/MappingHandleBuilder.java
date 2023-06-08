@@ -1,6 +1,5 @@
 package com.tx06.interceptor;
 
-import cn.hutool.core.annotation.AnnotationProxy;
 import cn.hutool.extra.spring.SpringUtil;
 import com.tx06.config.ApiDocProp;
 import com.tx06.interceptor.handle.DefaultMappingHandle;
@@ -10,14 +9,11 @@ import lombok.Data;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
