@@ -80,7 +80,7 @@ public class StaticAnalysis implements CommandLineRunner {
             r.put("projectUuid",MappingHandleBuilder.getProp().server.getUuid());
             r.put("dataType","3");
         });
-        SpringUtil.getBean(SenderServiceImpl.class).rsycnFieldComment(columns);
+        SpringUtil.getBean(SenderServiceImpl.class).rsyncFieldComment(columns);
     }
 
     private void rsyncDict() throws SQLException {

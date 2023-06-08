@@ -38,7 +38,7 @@ public class SenderServiceImpl {
         }
     }
 
-    public void rsycnFieldComment(List<Map<String,Object>> list){
+    public void rsyncFieldComment(List<Map<String,Object>> list){
         try {
             String param = JSON.toJSONString(list);
 
