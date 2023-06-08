@@ -84,6 +84,7 @@ public class DefaultMappingHandle implements MappingHandle{
 
   }
 
+  //模板模式
   @Override
   public Object sendApi() throws Throwable {
     response = pjp.proceed();

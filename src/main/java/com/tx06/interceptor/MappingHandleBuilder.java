@@ -9,6 +9,7 @@ import com.tx06.interceptor.handle.NullMappingHandle;
 import lombok.Data;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,13 +21,25 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+//建造者模式
 @Data
 public class MappingHandleBuilder {
     private DefaultMappingHandle mappingHandle;
-    private static ApiDocProp prop;
 
+    //单例模式
+    private static ApiDocProp prop;
+    private static JdbcTemplate jdbcTemplate;
     static {
         prop = SpringUtil.getBean(ApiDocProp.class);
+        jdbcTemplate = SpringUtil.getBean(JdbcTemplate.class);
+    }
+
+    public static ApiDocProp getProp() {
+        return prop;
+    }
+
+    public static JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
     }
 
     public static MappingHandleBuilder create(ProceedingJoinPoint pjp){

@@ -4,22 +4,19 @@ import com.tx06.interceptor.handle.DefaultMappingHandle;
 import com.tx06.interceptor.handle.GetMappingHandle;
 import com.tx06.interceptor.handle.PostMappingHandle;
 import com.tx06.interceptor.handle.RequestMappingHandle;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
+//工厂模式
 public class MappingHandleFactory {
-    private static Map<String, DefaultMappingHandle> requestHandleMap = new HashMap<>();
-    static {
-        requestHandleMap.put(GetMapping.class.getSimpleName(),new GetMappingHandle());
-        requestHandleMap.put(PostMapping.class.getSimpleName(),new PostMappingHandle());
-        requestHandleMap.put(RequestMapping.class.getSimpleName(),new RequestMappingHandle());
-        requestHandleMap.put(PutMapping.class.getSimpleName(),new DefaultMappingHandle());
-        requestHandleMap.put(DeleteMapping.class.getSimpleName(),new DefaultMappingHandle());
-    }
 
     public static DefaultMappingHandle getInstance(String className){
-        return requestHandleMap.get(className);
+        if("GetMapping".equals(className)){
+            return new GetMappingHandle();
+        }else if("PostMapping".equals(className)){
+            return new PostMappingHandle();
+        }else if("RequestMapping".equals(className)){
+            return new RequestMappingHandle();
+        }else{
+            return new DefaultMappingHandle();
+        }
     }
 }

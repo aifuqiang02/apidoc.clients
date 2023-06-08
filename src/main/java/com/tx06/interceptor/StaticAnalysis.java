@@ -35,8 +35,6 @@ import java.util.*;
 public class StaticAnalysis implements CommandLineRunner {
     private Log log = LogFactory.get(StaticAnalysis.class);
     private static LocalVariableTableParameterNameDiscoverer parameterNameDiscovere = new LocalVariableTableParameterNameDiscoverer();
-    private JdbcTemplate jdbcTemplate;
-    private ApiDocProp prop;
     private String dbName;
 
 
@@ -51,13 +49,12 @@ public class StaticAnalysis implements CommandLineRunner {
     }
 
     private void init() throws SQLException {
-        prop = SpringUtil.getBean(ApiDocProp.class);
         log.debug("开始初始化");
-        if(!StrUtil.isEmpty(prop.getServer().getBasePath())){
-            Constant.BASE_PATH = prop.getServer().getBasePath();
+        if(!StrUtil.isEmpty(MappingHandleBuilder.getProp().getServer().getBasePath())){
+            Constant.BASE_PATH = MappingHandleBuilder.getProp().getServer().getBasePath();
         }
-        jdbcTemplate = SpringUtil.getBean(JdbcTemplate.class);
-        String [] arr = jdbcTemplate.getDataSource().getConnection().getMetaData().getURL().split("\\?")[0].split("/");
+
+        String [] arr = MappingHandleBuilder.getJdbcTemplate().getDataSource().getConnection().getMetaData().getURL().split("\\?")[0].split("/");
         dbName = arr[arr.length-1];
 
     }
@@ -66,7 +63,7 @@ public class StaticAnalysis implements CommandLineRunner {
 
         log.debug("数据库表备注格式检查");
         String sql = "select t.`table_name`,t.`table_comment` from `information_schema`.`TABLES` t where t.`TABLE_SCHEMA` = '"+dbName+"' and table_comment not like '%|%'";
-        List<Map<String,Object>> columns = jdbcTemplate.queryForList(sql);
+        List<Map<String,Object>> columns = MappingHandleBuilder.getJdbcTemplate().queryForList(sql);
         columns.forEach(r->{
             String tableName = (String) r.get("table_name");
             String tableComment = (String) r.get("table_comment");
@@ -78,9 +75,9 @@ public class StaticAnalysis implements CommandLineRunner {
         log.debug("同步数据库字段备注");
         String sql = "SELECT c.`COLUMN_NAME` AS field,c.`COLUMN_COMMENT` AS name FROM `information_schema`.`COLUMNS` c WHERE c.`TABLE_SCHEMA` = '" + dbName
                 + "'  AND c.column_comment IS NOT NULL AND c.column_comment != ''  GROUP BY c.column_name";
-        List<Map<String,Object>> columns = jdbcTemplate.queryForList(sql);
+        List<Map<String,Object>> columns = MappingHandleBuilder.getJdbcTemplate().queryForList(sql);
         columns.stream().forEach(r->{
-            r.put("projectUuid",this.prop.server.getUuid());
+            r.put("projectUuid",MappingHandleBuilder.getProp().server.getUuid());
             r.put("dataType","3");
         });
         SpringUtil.getBean(SenderServiceImpl.class).rsycnFieldComment(columns);
@@ -88,13 +85,13 @@ public class StaticAnalysis implements CommandLineRunner {
 
     private void rsyncDict() throws SQLException {
         log.debug("同步数据库字段备注");
-        String sql = prop.server.getDictSql();
+        String sql = MappingHandleBuilder.getProp().server.getDictSql();
         if(sql == null){
             return;
         }
-        List<Map<String,Object>> columns = jdbcTemplate.queryForList(sql);
+        List<Map<String,Object>> columns = MappingHandleBuilder.getJdbcTemplate().queryForList(sql);
         columns.forEach(r->{
-            r.put("u_project_uuid",this.prop.server.getUuid());
+            r.put("u_project_uuid",MappingHandleBuilder.getProp().server.getUuid());
         });
         SpringUtil.getBean(SenderServiceImpl.class).rsyncDict(columns);
     }
@@ -118,7 +115,7 @@ public class StaticAnalysis implements CommandLineRunner {
             if(restController == null || StrUtil.isEmpty(restController.value()) || StrUtil.isEmpty(info.getName()) || alreadLines.contains(url)){
                 continue;
             }
-            api.setProjectUuid(this.prop.server.getUuid());
+            api.setProjectUuid(MappingHandleBuilder.getProp().server.getUuid());
             api.setConfirmed("2");
             setMethodType(handlerMethod,api);
             setUrlTitle( handlerMethod, info, api);
