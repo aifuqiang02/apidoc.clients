@@ -32,9 +32,13 @@ import java.util.*;
 
 @Component
 @Order(value = 100)
-public class StaticAnalysis extends AbstractApidocAspect implements CommandLineRunner {
+public class StaticAnalysis implements CommandLineRunner {
     private Log log = LogFactory.get(StaticAnalysis.class);
     private static LocalVariableTableParameterNameDiscoverer parameterNameDiscovere = new LocalVariableTableParameterNameDiscoverer();
+    private JdbcTemplate jdbcTemplate;
+    private ApiDocProp prop;
+    private String dbName;
+
 
     @Override
     public void run(String... args) throws Exception {
@@ -47,17 +51,19 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
     }
 
     private void init() throws SQLException {
+        prop = SpringUtil.getBean(ApiDocProp.class);
         log.debug("开始初始化");
-        this.u_project_uuid = SpringUtil.getBean(ApiDocProp.class).getServer().getUuid();
-        if(!StrUtil.isEmpty(getApiDocProp().getServer().getBasePath())){
-            Constant.BASE_PATH = getApiDocProp().getServer().getBasePath();
+        if(!StrUtil.isEmpty(prop.getServer().getBasePath())){
+            Constant.BASE_PATH = prop.getServer().getBasePath();
         }
-        AbstractApidocAspect.jdbcTemplate = SpringUtil.getBean(JdbcTemplate.class);
-        String [] arr = AbstractApidocAspect.jdbcTemplate.getDataSource().getConnection().getMetaData().getURL().split("\\?")[0].split("/");
+        jdbcTemplate = SpringUtil.getBean(JdbcTemplate.class);
+        String [] arr = jdbcTemplate.getDataSource().getConnection().getMetaData().getURL().split("\\?")[0].split("/");
         dbName = arr[arr.length-1];
+
     }
 
     private void tableCommentCheck() throws SQLException {
+
         log.debug("数据库表备注格式检查");
         String sql = "select t.`table_name`,t.`table_comment` from `information_schema`.`TABLES` t where t.`TABLE_SCHEMA` = '"+dbName+"' and table_comment not like '%|%'";
         List<Map<String,Object>> columns = jdbcTemplate.queryForList(sql);
@@ -74,7 +80,7 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
                 + "'  AND c.column_comment IS NOT NULL AND c.column_comment != ''  GROUP BY c.column_name";
         List<Map<String,Object>> columns = jdbcTemplate.queryForList(sql);
         columns.stream().forEach(r->{
-            r.put("projectUuid",this.u_project_uuid);
+            r.put("projectUuid",this.prop.server.getUuid());
             r.put("dataType","3");
         });
         SpringUtil.getBean(SenderServiceImpl.class).rsycnFieldComment(columns);
@@ -82,13 +88,13 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
 
     private void rsyncDict() throws SQLException {
         log.debug("同步数据库字段备注");
-        String sql = getApiDocProp().server.getDictSql();
+        String sql = prop.server.getDictSql();
         if(sql == null){
             return;
         }
         List<Map<String,Object>> columns = jdbcTemplate.queryForList(sql);
         columns.forEach(r->{
-            r.put("u_project_uuid",this.u_project_uuid);
+            r.put("u_project_uuid",this.prop.server.getUuid());
         });
         SpringUtil.getBean(SenderServiceImpl.class).rsyncDict(columns);
     }
@@ -112,7 +118,7 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
             if(restController == null || StrUtil.isEmpty(restController.value()) || StrUtil.isEmpty(info.getName()) || alreadLines.contains(url)){
                 continue;
             }
-            api.setProjectUuid(getApiDocProp().getServer().getUuid());
+            api.setProjectUuid(this.prop.server.getUuid());
             api.setConfirmed("2");
             setMethodType(handlerMethod,api);
             setUrlTitle( handlerMethod, info, api);
@@ -244,8 +250,4 @@ public class StaticAnalysis extends AbstractApidocAspect implements CommandLineR
         return has;
     }
 
-    @Override
-    protected String getMethodName() {
-        return null;
-    }
 }

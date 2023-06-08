@@ -4,9 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5521d1ec-ee4f-4640-b699-496f19230282" name="Default" comment="">
+    <list default="true" id="5521d1ec-ee4f-4640-b699-496f19230282" name="Default" comment="11111">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/MappingHandleBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/MappingHandleFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/DefaultMappingHandle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/GetMappingHandle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/MappingHandle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/NullMappingHandle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/PostMappingHandle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/RequestMappingHandle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/exception/MessageConsumeQueue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/exception/MessageConsumeQueue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/AbstractApidocAspect.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/GetAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/ControllerRequestAspect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/PostAspect.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/RequestAspect.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -224,35 +238,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/clickhouse-master&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;,
-    &quot;spring.configuration.checksum&quot;: &quot;72adca9c15a46827ef6d8d319488b962&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "go.import.settings.migrated": "true",
+    "last_opened_file_path": "D:/idea_project/mybatis/springboot3",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "vcs.Git",
+    "spring.configuration.checksum": "72adca9c15a46827ef6d8d319488b962",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RebelAgentSelection">
     <selection>jr</selection>
   </component>
   <component name="RecentsManager">
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.tx06.request" />
-      <recent name="com.tx06.interceptor" />
-      <recent name="com.tx06.annotation" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\projects\apidoc.clients\src\main\java\com\tx06\entity" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.tx06.interceptor" />
+      <recent name="com.tx06.request" />
+      <recent name="com.tx06.annotation" />
     </key>
   </component>
   <component name="RunManager">
@@ -325,7 +342,9 @@
       <workItem from="1680066207096" duration="892000" />
       <workItem from="1681716088493" duration="558000" />
       <workItem from="1681781070899" duration="351000" />
-      <workItem from="1685518631044" duration="2447000" />
+      <workItem from="1685518631044" duration="3194000" />
+      <workItem from="1685675096515" duration="1991000" />
+      <workItem from="1686193303737" duration="10447000" />
     </task>
     <task id="LOCAL-00001" summary="11111">
       <created>1664110071348</created>
@@ -404,7 +423,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685518670602</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="11111">
+      <created>1685530324236</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1685530324236</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
