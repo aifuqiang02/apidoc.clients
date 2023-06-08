@@ -86,7 +86,7 @@ public class DefaultMappingHandle implements MappingHandle{
 
   @Override
   public Object sendApi() throws Throwable {
-    Object response = pjp.proceed();
+    response = pjp.proceed();
 
     initMethodTitle();
     initFullTitle();

@@ -48,7 +48,7 @@ public class MappingHandleBuilder {
         }else if(!prop.server.getRun()){
             mappingHandle = new NullMappingHandle();
         }else {
-            mappingHandle = MappingHandleFactory.getInstance(mappingAnnotation.getClass().getName());
+            mappingHandle = MappingHandleFactory.getInstance(mappingAnnotation.annotationType().getSimpleName());
         }
         mappingHandle.pjp = pjp;
         mappingHandle.method = method;
