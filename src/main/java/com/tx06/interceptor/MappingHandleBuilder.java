@@ -26,7 +26,7 @@ public class MappingHandleBuilder {
     //单例模式
     private static ApiDocProp prop;
     private static JdbcTemplate jdbcTemplate;
-    
+
     static {
         prop = SpringUtil.getBean(ApiDocProp.class);
         jdbcTemplate = SpringUtil.getBean(JdbcTemplate.class);
