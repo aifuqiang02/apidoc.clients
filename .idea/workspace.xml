@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="5521d1ec-ee4f-4640-b699-496f19230282" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/request/SenderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/request/SenderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/MappingHandleBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/MappingHandleBuilder.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -329,7 +329,7 @@
       <workItem from="1681781070899" duration="351000" />
       <workItem from="1685518631044" duration="3194000" />
       <workItem from="1685675096515" duration="1991000" />
-      <workItem from="1686193303737" duration="15020000" />
+      <workItem from="1686193303737" duration="16723000" />
     </task>
     <task id="LOCAL-00001" summary="11111">
       <created>1664110071348</created>
@@ -450,7 +450,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686211235760</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="11111">
+      <created>1686218970184</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1686218970184</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TimeTrackingManager">

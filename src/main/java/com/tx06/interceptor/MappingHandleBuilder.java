@@ -21,10 +21,12 @@ import java.util.Arrays;
 @Data
 public class MappingHandleBuilder {
     private DefaultMappingHandle mappingHandle;
+    private ProceedingJoinPoint pjp;
 
     //单例模式
     private static ApiDocProp prop;
     private static JdbcTemplate jdbcTemplate;
+    
     static {
         prop = SpringUtil.getBean(ApiDocProp.class);
         jdbcTemplate = SpringUtil.getBean(JdbcTemplate.class);
@@ -39,16 +41,22 @@ public class MappingHandleBuilder {
     }
 
     public static MappingHandleBuilder create(ProceedingJoinPoint pjp){
+        MappingHandleBuilder builder = new MappingHandleBuilder();
+        builder.pjp = pjp;
+
+        return builder;
+    }
+
+    public MappingHandle build(){
         MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         RestController restController = pjp.getTarget().getClass().getAnnotation(RestController.class);
 
         Method method = methodSignature.getMethod();
         Annotation mappingAnnotation = Arrays.stream(method.getAnnotations()).filter(annotation ->
-             annotation.annotationType().getName().contains("org.springframework.web.bind.annotation")
+                annotation.annotationType().getName().contains("org.springframework.web.bind.annotation")
         ).findAny().orElse(null);
 
-        MappingHandleBuilder builder = new MappingHandleBuilder();
         DefaultMappingHandle mappingHandle ;
         if(mappingAnnotation == null){
             mappingHandle = new NullMappingHandle();
@@ -65,13 +73,7 @@ public class MappingHandleBuilder {
         mappingHandle.requestMapping = mappingAnnotation;
         mappingHandle.restController = restController;
         mappingHandle.prop = prop;
-        builder.mappingHandle = mappingHandle;
-
-        return builder;
-    }
-
-    public MappingHandle build(){
-
+        this.mappingHandle = mappingHandle;
         return this.mappingHandle;
     }
 
