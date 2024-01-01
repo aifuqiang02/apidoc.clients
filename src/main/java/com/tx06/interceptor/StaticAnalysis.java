@@ -40,12 +40,16 @@ public class StaticAnalysis implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        init();
-        tableCommentCheck();
-        rsyncFieldComment();
-        rsyncDict();
-        start();
-        log.debug("StaticAnalysis 执行完成");
+        try {
+            init();
+            tableCommentCheck();
+            rsyncFieldComment();
+            rsyncDict();
+            start();
+            log.debug("StaticAnalysis 执行完成");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void init() throws SQLException {
