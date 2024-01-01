@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5521d1ec-ee4f-4640-b699-496f19230282" name="Default" comment="增加表备注格式校验">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/DeleteMappingHandle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/PutMappingHandle.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/annotation/X.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/config/Config.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -216,21 +220,25 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/clickhouse-master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/SpringBootDemo/SpringBootDemo&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.CamelCasePlugin&quot;,
     &quot;spring.configuration.checksum&quot;: &quot;72adca9c15a46827ef6d8d319488b962&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\projects\apidoc.clients\src\main\java\com\tx06\entity" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.tx06.interceptor.handle" />
       <recent name="com.tx06.request" />
       <recent name="com.tx06.interceptor" />
       <recent name="com.tx06.annotation" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\projects\apidoc.clients\src\main\java\com\tx06\entity" />
     </key>
   </component>
   <component name="RunManager">
@@ -306,6 +314,10 @@
       <workItem from="1681781239648" duration="731000" />
       <workItem from="1681912086705" duration="10310000" />
       <workItem from="1685518370910" duration="1819000" />
+      <workItem from="1686226275058" duration="781000" />
+      <workItem from="1687187156308" duration="599000" />
+      <workItem from="1688347381202" duration="633000" />
+      <workItem from="1704109782043" duration="302000" />
     </task>
     <task id="LOCAL-00001" summary="11111">
       <created>1664110071348</created>
@@ -440,7 +452,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685518380582</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="增加表备注格式校验">
+      <created>1686226327446</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1686226327446</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
