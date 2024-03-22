@@ -6,7 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="5521d1ec-ee4f-4640-b699-496f19230282" name="Default" comment="增加表备注格式校验">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/entity/TMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/TMessage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/DefaultMappingHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/DefaultMappingHandle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/request/SenderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/request/SenderServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -315,6 +319,12 @@
       <workItem from="1687187156308" duration="599000" />
       <workItem from="1688347381202" duration="633000" />
       <workItem from="1704109782043" duration="1894000" />
+      <workItem from="1705212463590" duration="3899000" />
+      <workItem from="1705731595844" duration="599000" />
+      <workItem from="1706017283085" duration="1812000" />
+      <workItem from="1706848162759" duration="1198000" />
+      <workItem from="1709558306209" duration="1200000" />
+      <workItem from="1710247156315" duration="2478000" />
     </task>
     <task id="LOCAL-00001" summary="11111">
       <created>1664110071348</created>

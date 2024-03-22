@@ -5,9 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.tx06.config.Constant;
 import com.tx06.config.ApiDocProp;
 import com.tx06.entity.Apidoc;
@@ -29,6 +28,8 @@ import java.io.IOException;
 import java.lang.reflect.Parameter;
 import java.sql.SQLException;
 import java.util.*;
+
+import static com.alibaba.fastjson2.JSONWriter.Feature.WriteMapNullValue;
 
 @Component
 @Order(value = 100)
@@ -171,12 +172,12 @@ public class StaticAnalysis implements CommandLineRunner {
                 }
             }
         }
-        apidoc.setParameterExamples(JSON.toJSONString(parameterExamples, SerializerFeature.WriteMapNullValue));
+        apidoc.setParameterExamples(JSON.toJSONString(parameterExamples, WriteMapNullValue));
     }
 
     private JSONObject newInstance(Class c){
         try {
-            return JSON.parseObject(JSON.toJSONString(c.newInstance(), SerializerFeature.WriteMapNullValue));
+            return JSON.parseObject(JSON.toJSONString(c.newInstance(), WriteMapNullValue));
         } catch (Exception e) {
             log.error(c.getSimpleName() + "初始化失败,"+e.getMessage());
         }

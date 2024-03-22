@@ -2,8 +2,8 @@ package com.tx06.request;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.http.HttpUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.tx06.config.ApiDocProp;
 import com.tx06.entity.Apidoc;
 import com.tx06.entity.TMessage;

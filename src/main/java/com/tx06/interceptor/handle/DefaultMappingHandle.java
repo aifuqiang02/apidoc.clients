@@ -1,9 +1,10 @@
 package com.tx06.interceptor.handle;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.tx06.config.ApiDocProp;
 import com.tx06.entity.Apidoc;
 import com.tx06.request.SenderServiceImpl;
@@ -26,6 +27,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import static com.alibaba.fastjson2.JSONWriter.Feature.WriteMapNullValue;
 
 
 public class DefaultMappingHandle implements MappingHandle{
@@ -70,12 +73,17 @@ public class DefaultMappingHandle implements MappingHandle{
 
   @Override
   public void initResponse() {
-    if (response instanceof String && response.toString().startsWith("[")) {
-      apidoc.setResponseExamples(lessenArray(JSONArray.parseObject(JSONArray.toJSONString(response, SerializerFeature.WriteMapNullValue))));
-    } else if (response instanceof String && response.toString().startsWith("{")) {
-      apidoc.setResponseExamples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
-    } else {
-      apidoc.setResponseExamples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, SerializerFeature.WriteMapNullValue))));
+    try {
+      if (JSONUtil.isTypeJSONArray(JSON.toJSONString(response))) {
+        Map rs = MapUtil.builder().put("data",response).put("code","200").build();
+        apidoc.setResponseExamples(lessenArray(JSON.parseObject(JSONArray.toJSONString(rs, WriteMapNullValue))));
+      } else if (JSONUtil.isTypeJSONObject(JSON.toJSONString(response))) {
+        apidoc.setResponseExamples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, WriteMapNullValue))));
+      } else {
+        apidoc.setResponseExamples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, WriteMapNullValue))));
+      }
+    }catch (Exception e){
+      e.printStackTrace();
     }
   }
 
@@ -156,7 +164,7 @@ public class DefaultMappingHandle implements MappingHandle{
         jsonObj.put((String) k, val);
       }
     }
-    return JSONObject.toJSONString(jsonObj, SerializerFeature.WriteMapNullValue);
+    return JSONObject.toJSONString(jsonObj, WriteMapNullValue);
   }
 
   //内置
@@ -186,7 +194,7 @@ public class DefaultMappingHandle implements MappingHandle{
             params.put(key, values.length == 1 ? values[0].trim() : values);
           }
         }
-        return JSON.toJSONString(params, SerializerFeature.WriteMapNullValue);
+        return JSON.toJSONString(params, WriteMapNullValue);
       }
     }
   }
