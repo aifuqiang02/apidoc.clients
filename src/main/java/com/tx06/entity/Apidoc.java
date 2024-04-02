@@ -1,9 +1,13 @@
 package com.tx06.entity;
 
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class Apidoc {
@@ -59,6 +63,10 @@ public class Apidoc {
      * 智能识别参数+用户自定义参数
      */
     private String parameter;
+    /**
+     * 智能识别参数+用户自定义参数
+     */
+    private String parameterKey;
 
     /**
      * 头文件
@@ -113,4 +121,18 @@ public class Apidoc {
      */
     private Integer field_count;
 
+    public String getParameterKey() {
+        if (parameterKey == null) {
+            parameterKey = "";
+        }
+        JSONObject jsonObject = JSON.parseObject(parameterKey);
+        if (jsonObject != null) {
+            List<String> list = new ArrayList<>();
+            jsonObject.forEach((k, v) -> {
+                list.add(k);
+            });
+            parameterKey = list.stream().collect(Collectors.joining(","));
+        }
+        return parameterKey;
+    }
 }

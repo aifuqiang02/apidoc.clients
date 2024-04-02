@@ -2,6 +2,8 @@ package com.tx06.interceptor;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.digest.MD5;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
@@ -10,6 +12,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.tx06.config.Constant;
 import com.tx06.config.ApiDocProp;
 import com.tx06.entity.Apidoc;
+import com.tx06.entity.Callback;
 import com.tx06.request.SenderServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.CommandLineRunner;
@@ -109,26 +112,35 @@ public class StaticAnalysis implements CommandLineRunner {
         if(!FileUtil.exist("urls.db")){
             FileUtil.touch("urls.db");
         }
-        List<String> alreadLines = FileUtil.readLines("urls.db","utf-8");
+        List<String> alreadLines = FileUtil.readLines("c:/urls.db","utf-8");
         for (RequestMappingInfo info : methodMap.keySet()){
             Apidoc api = new Apidoc();
             HandlerMethod handlerMethod = methodMap.get(info);
             RestController restController = handlerMethod.getBeanType().getAnnotation(RestController.class);
-            Set<String> patterns = info.getPatternsCondition().getPatterns();
-            String url = patterns.toArray(new String[patterns.size()])[0];
 
-            if(restController == null || StrUtil.isEmpty(restController.value()) || StrUtil.isEmpty(info.getName()) || alreadLines.contains(url)){
-                continue;
-            }
             api.setProjectUuid(MappingHandleBuilder.getProp().server.getUuid());
             api.setConfirmed("2");
             setMethodType(handlerMethod,api);
             setUrlTitle( handlerMethod, info, api);
             setParameters( handlerMethod, api);
             setResponse( handlerMethod, api);
+            String line = SecureUtil.md5( api.getUrl() + api.getFullTitle() + api.getParameterKey());
+            if(restController == null || StrUtil.isEmpty(restController.value()) || StrUtil.isEmpty(info.getName()) || alreadLines.contains(line)){
+                continue;
+            }
+            SpringUtil.getBean(SenderServiceImpl.class).send(api, new Callback() {
+                @Override
+                public void onSuccess(Apidoc apidoc) {
+                    String line = SecureUtil.md5( apidoc.getUrl() + apidoc.getFullTitle() + apidoc.getParameterKey());
+                    FileUtil.appendString(line +"\n","c:/urls.db","utf-8");
+                }
 
-            SpringUtil.getBean(SenderServiceImpl.class).send(api);
-            FileUtil.appendString(url+"\n","urls.db","utf-8");
+                @Override
+                public void onFailure(Apidoc apidoc, Exception exception) {
+                    log.error("接口文档同步失败", exception);
+                    log.error("apidoc", JSON.toJSONString(apidoc));
+                }
+            });
         }
     }
 

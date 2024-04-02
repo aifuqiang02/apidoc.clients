@@ -1,5 +1,7 @@
 package com.tx06.interceptor.handle;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.crypto.SecureUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSON;
@@ -7,9 +9,11 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.tx06.config.ApiDocProp;
 import com.tx06.entity.Apidoc;
+import com.tx06.entity.Callback;
 import com.tx06.request.SenderServiceImpl;
 import jakarta.servlet.ServletRequestWrapper;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.HandlerMethod;
@@ -31,6 +35,7 @@ import java.util.Set;
 import static com.alibaba.fastjson2.JSONWriter.Feature.WriteMapNullValue;
 
 
+@Slf4j
 public class DefaultMappingHandle implements MappingHandle{
   public ProceedingJoinPoint pjp;
   public Method method;
@@ -108,7 +113,17 @@ public class DefaultMappingHandle implements MappingHandle{
     apidoc.setProjectUuid(prop.getServer().getUuid());
     apidoc.setContentType(request.getContentType() == null ? "application/x-www-form-urlencoded" : request.getContentType());
     apidoc.setConfirmed("1");
-    SpringUtil.getBean(SenderServiceImpl.class).send(apidoc);
+    SpringUtil.getBean(SenderServiceImpl.class).send(apidoc, new Callback() {
+      @Override
+      public void onSuccess(Apidoc apidoc) {
+      }
+
+      @Override
+      public void onFailure(Apidoc apidoc, Exception exception) {
+        log.error("接口文档同步失败", exception);
+        log.error("apidoc", JSON.toJSONString(apidoc));
+      }
+    });
     return response;
   }
 

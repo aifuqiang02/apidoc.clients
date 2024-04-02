@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5521d1ec-ee4f-4640-b699-496f19230282" name="Default" comment="增加表备注格式校验">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Callback.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Apidoc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Apidoc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/DefaultMappingHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/DefaultMappingHandle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/request/SenderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/request/SenderServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,8 +87,8 @@
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="mavenHome" value="$PROJECT_DIR$/../../tools/apache-maven-3.5.3" />
-        <option name="userSettingsFile" value="D:\tools\apache-maven-3.5.3\conf\settings.xml" />
+        <option name="mavenHome" value="$PROJECT_DIR$/../../tools/apache-maven-3.6.0" />
+        <option name="userSettingsFile" value="D:\tools\apache-maven-3.6.0\conf\settings.xml" />
       </MavenGeneralSettings>
     </option>
   </component>
@@ -212,21 +216,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/SpringBootDemo/SpringBootDemo&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.CamelCasePlugin&quot;,
-    &quot;spring.configuration.checksum&quot;: &quot;72adca9c15a46827ef6d8d319488b962&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/SpringBootDemo/SpringBootDemo",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "MavenSettings",
+    "spring.configuration.checksum": "72adca9c15a46827ef6d8d319488b962",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\projects\apidoc.clients\src\main\java\com\tx06\entity" />
@@ -239,6 +243,12 @@
     </key>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="xenon.apidoc.clients" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <method v="2">
@@ -248,12 +258,6 @@
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <option name="TEST_OBJECT" value="class" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="xenon.apidoc.clients" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -322,6 +326,7 @@
       <workItem from="1709558306209" duration="1200000" />
       <workItem from="1710247156315" duration="3876000" />
       <workItem from="1711701630530" duration="1981000" />
+      <workItem from="1712039761939" duration="5260000" />
     </task>
     <task id="LOCAL-00001" summary="11111">
       <created>1664110071348</created>

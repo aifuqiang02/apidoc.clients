@@ -6,6 +6,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.tx06.config.ApiDocProp;
 import com.tx06.entity.Apidoc;
+import com.tx06.entity.Callback;
 import com.tx06.entity.TMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +25,7 @@ public class SenderServiceImpl {
     private final Log log = LogFactory.getLog(SenderServiceImpl.class);
 
     @Async("apidocTaskExecutor")
-    public void send(Apidoc apidoc){
+    public void send(Apidoc apidoc, Callback callback){
         try {
             String param = JSON.toJSONString(apidoc);
 
@@ -32,8 +33,12 @@ public class SenderServiceImpl {
             JSONObject rs = JSON.parseObject(str);
             if(!rs.containsKey("code") || rs.getInteger("code")!=200){
                 log.error("apidoc 接口请求失败：" + rs.getString("msg"));
+                callback.onFailure(apidoc, new Exception(rs.getString("msg")));
+            }else{
+                callback.onSuccess(apidoc);
             }
         }catch (Exception e){
+            callback.onFailure(apidoc, e);
             log.error("apidoc 接口请求失败：" + e.getMessage());
         }
     }
