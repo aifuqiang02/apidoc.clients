@@ -147,6 +147,9 @@ public class DefaultMappingHandle implements MappingHandle{
 
   //内置
   private String lessenArray(JSONObject jsonObj) {
+    if(jsonObj == null){
+      return "{}";
+    }
     Iterator it = jsonObj.keySet().iterator();
     while (it.hasNext()) {
       Object k = it.next();
