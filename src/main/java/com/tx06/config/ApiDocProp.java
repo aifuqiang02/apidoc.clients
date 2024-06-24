@@ -2,6 +2,7 @@ package com.tx06.config;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.SystemUtil;
+import com.tx06.entity.RequestParam;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -24,6 +25,10 @@ public class ApiDocProp {
         private String token;
         private String dictSql;
         private String uuid;
+        //忽略字段
+        private String ignoreField;
+        //headerParams
+        private List<RequestParam> headerParams = new ArrayList<>();
 
         public boolean getRun() {
             if(StrUtil.isNotEmpty(run)){

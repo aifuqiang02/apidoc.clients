@@ -12,6 +12,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.tx06.config.*;
 import com.tx06.entity.*;
+import com.tx06.entity.RequestParam;
 import com.tx06.handle.BaseRequestParamHandle;
 import com.tx06.handle.RequestParamHandleFactory;
 import com.tx06.request.SenderServiceImpl;
@@ -105,7 +106,6 @@ public class StaticAnalysis implements CommandLineRunner {
         columns.forEach(r->{
             r.put("u_project_uuid",MappingHandleBuilder.getProp().server.getUuid());
         });
-        SpringUtil.getBean(SenderServiceImpl.class).rsyncDict(columns);
     }
 
     public void start() throws InstantiationException, IllegalAccessException, IOException {
@@ -152,8 +152,13 @@ public class StaticAnalysis implements CommandLineRunner {
         setContentType(handlerMethod,api);
         setUrl( requestMappingInfo, api);
         setParameters( handlerMethod, api);
-
+        setRequestHeaders(api);
         return api;
+    }
+
+    private void setRequestHeaders(Api api) {
+        List<RequestParam> headerParams = MappingHandleBuilder.getProp().getServer().getHeaderParams();
+        api.getRequestParams().setHeaderParams(headerParams);
     }
 
 
@@ -238,7 +243,7 @@ public class StaticAnalysis implements CommandLineRunner {
                     typeToRequestParams(requestParam.getChildList(), (Class<?>) listGenericType,null,index+1);
                 }
             }
-        }else if(BeanUtils.isSimpleProperty(fieldType)){
+        }else if(BeanUtils.isSimpleProperty(fieldType) && !isIgnoreField(fieldName)){
             com.tx06.entity.RequestParam requestParam = createRequestParam(fieldType, fieldName);
             responseParams.add(requestParam);
         } else {
@@ -246,6 +251,18 @@ public class StaticAnalysis implements CommandLineRunner {
             typeToRequestParams(requestParam.getChildList(),fieldType,null,index+1);
         }
     }
+
+    // 是否忽略字段
+    private boolean isIgnoreField(String fieldName){
+        String ignoreField = MappingHandleBuilder.getProp().getServer().getIgnoreField();
+        if(ignoreField!= null && ignoreField.contains(fieldName)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
 
     public static com.tx06.entity.RequestParam createRequestParam(Class<?> type,String fieldName){
         com.tx06.entity.RequestParam requestParam = new com.tx06.entity.RequestParam();

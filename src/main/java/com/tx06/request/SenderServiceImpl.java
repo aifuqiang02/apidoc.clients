@@ -75,18 +75,4 @@ public class SenderServiceImpl {
             log.error("接口请求失败：" + e.getMessage());
         }
     }
-
-    public void rsyncDict(List<Map<String,Object>> list) {
-        try {
-            String param = JSON.toJSONString(list);
-
-            String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apiDoc/rsyncDict?version="+VERSION,param);
-            JSONObject rs = JSON.parseObject(str);
-            if(!rs.containsKey("code") || rs.getInteger("code")!=200){
-                log.error("apidoc 接口请求失败：" + rs.getString("msg"));
-            }
-        }catch (Exception e){
-            log.error("apidoc 接口请求失败：" + e.getMessage());
-        }
-    }
 }
