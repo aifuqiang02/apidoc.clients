@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class DeleteMappingHandle extends DefaultMappingHandle{
     @Override
     public void initMethodTitle() {
-        apidoc.setTitle(((DeleteMapping)requestMapping).name());
+        //apidoc.setTitle(((DeleteMapping)requestMapping).name());
     }
 
     @Override
     public void initMethodType() {
-        apidoc.setMethod("DELETE");
+        //apidoc.setMethod("DELETE");
     }
 
     @Override

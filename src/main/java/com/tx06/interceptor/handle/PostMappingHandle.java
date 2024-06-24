@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class PostMappingHandle extends DefaultMappingHandle{
     @Override
     public void initMethodTitle() {
-        apidoc.setTitle(((PostMapping)requestMapping).name());
+        // apidoc.setTitle(((PostMapping)requestMapping).name());
     }
 
     @Override
     public void initMethodType() {
-        apidoc.setMethod("POST");
+        //apidoc.setMethod("POST");
     }
 
     @Override

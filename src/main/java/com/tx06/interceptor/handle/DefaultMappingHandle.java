@@ -8,6 +8,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.tx06.config.ApiDocProp;
+import com.tx06.entity.Api;
 import com.tx06.entity.Apidoc;
 import com.tx06.entity.Callback;
 import com.tx06.request.SenderServiceImpl;
@@ -45,7 +46,7 @@ public class DefaultMappingHandle implements MappingHandle{
   public ApiDocProp prop;
 
   public HttpServletRequest request;
-  public Apidoc apidoc = new Apidoc();
+  public Api apidoc = new Api();
 
   @Override
   public String getMappingValue() {
@@ -59,7 +60,7 @@ public class DefaultMappingHandle implements MappingHandle{
   @Override
   public void initFullTitle() {
     String classTitle = this.restController.value();
-    apidoc.setFullTitle((classTitle.endsWith("/") ? classTitle : classTitle + "/") + (apidoc.getTitle().startsWith("/") ? apidoc.getTitle().substring(1):apidoc.getTitle()));
+    //apidoc.setFullTitle((classTitle.endsWith("/") ? classTitle : classTitle + "/") + (apidoc.getTitle().startsWith("/") ? apidoc.getTitle().substring(1):apidoc.getTitle()));
   }
 
   @Override
@@ -68,12 +69,12 @@ public class DefaultMappingHandle implements MappingHandle{
 
   @Override
   public void initUrl() {
-     apidoc.setUrl(getUrl());
+     //apidoc.setUrl(getUrl());
   }
 
   @Override
   public void initParameter() throws IOException {
-    apidoc.setParameterExamples(getShortMap());
+    //apidoc.setParameterExamples(getShortMap());
   }
 
   @Override
@@ -81,11 +82,11 @@ public class DefaultMappingHandle implements MappingHandle{
     try {
       if (JSONUtil.isTypeJSONArray(JSON.toJSONString(response))) {
         Map rs = MapUtil.builder().put("data",response).put("code","200").build();
-        apidoc.setResponseExamples(lessenArray(JSON.parseObject(JSONArray.toJSONString(rs, WriteMapNullValue))));
+        //apidoc.setResponseExamples(lessenArray(JSON.parseObject(JSONArray.toJSONString(rs, WriteMapNullValue))));
       } else if (JSONUtil.isTypeJSONObject(JSON.toJSONString(response))) {
-        apidoc.setResponseExamples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, WriteMapNullValue))));
+        //apidoc.setResponseExamples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, WriteMapNullValue))));
       } else {
-        apidoc.setResponseExamples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, WriteMapNullValue))));
+        //apidoc.setResponseExamples(lessenArray(JSONObject.parseObject(JSONObject.toJSONString(response, WriteMapNullValue))));
       }
     }catch (Exception e){
       e.printStackTrace();
@@ -111,15 +112,15 @@ public class DefaultMappingHandle implements MappingHandle{
     initApiDoc();
 
     apidoc.setProjectUuid(prop.getServer().getUuid());
-    apidoc.setContentType(request.getContentType() == null ? "application/x-www-form-urlencoded" : request.getContentType());
-    apidoc.setConfirmed("1");
+    //apidoc.setContentType(request.getContentType() == null ? "application/x-www-form-urlencoded" : request.getContentType());
+    //apidoc.setConfirmed("1");
     SpringUtil.getBean(SenderServiceImpl.class).send(apidoc, new Callback() {
       @Override
-      public void onSuccess(Apidoc apidoc) {
+      public void onSuccess(Api apidoc) {
       }
 
       @Override
-      public void onFailure(Apidoc apidoc, Exception exception) {
+      public void onFailure(Api apidoc, Exception exception) {
         log.error("接口文档同步失败", exception);
         log.error("apidoc", JSON.toJSONString(apidoc));
       }
@@ -194,7 +195,7 @@ public class DefaultMappingHandle implements MappingHandle{
       if ("post".equals(methodStr) && request instanceof ServletRequestWrapper) {
         String requestParam = getBodyString(request);
         return requestParam;
-      }else if("post".equals(methodStr) && request.getClass().getName().contains("RepeatedlyRequestWrapper") &&  this.apidoc.getContentType()!=null && this.apidoc.getContentType().toLowerCase().contains("application/json")){
+      }else if("post".equals(methodStr) && request.getClass().getName().contains("RepeatedlyRequestWrapper") &&  this.apidoc.getApiAttrInfo().getContentType()!=null && this.apidoc.getApiAttrInfo().getContentType() == 0){
         String requestParam = getBodyString(request);
         return requestParam;
       } else {

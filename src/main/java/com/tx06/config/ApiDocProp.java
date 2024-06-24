@@ -20,8 +20,11 @@ public class ApiDocProp {
     public static class Server {
         private String run;
         private String basePath;
+        private String basePackage;
+        private String token;
         private String dictSql;
         private String uuid;
+
         public boolean getRun() {
             if(StrUtil.isNotEmpty(run)){
                 return run.equals("true");

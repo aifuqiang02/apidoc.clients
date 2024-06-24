@@ -5,11 +5,36 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5521d1ec-ee4f-4640-b699-496f19230282" name="Default" comment="增加表备注格式校验">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Callback.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/config/ApiParamsType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/config/BodyContentTypeEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/config/RequestMethodEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Api.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/ApiAttrInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/ApiBatchAddVO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/AuthInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Group.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/ParamAttr.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/RelationInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/RequestParam.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/RequestParams.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Response.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/ResponseParams.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Result.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Script.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/handle/BaseRequestParamHandle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/handle/MapRequestHandle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/handle/PageRequestHandle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/tx06/handle/RequestParamHandleFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Apidoc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Apidoc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/config/ApiDocProp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/config/ApiDocProp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Callback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/entity/Callback.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/StaticAnalysis.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/DefaultMappingHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/DefaultMappingHandle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/DeleteMappingHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/DeleteMappingHandle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/GetMappingHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/GetMappingHandle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/PostMappingHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/PostMappingHandle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/PutMappingHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/PutMappingHandle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/RequestMappingHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/interceptor/handle/RequestMappingHandle.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tx06/request/SenderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tx06/request/SenderServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -87,7 +112,8 @@
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="mavenHome" value="$PROJECT_DIR$/../../tools/apache-maven-3.6.0" />
+        <option name="customMavenHome" value="$PROJECT_DIR$/../../tools/apache-maven-3.6.0" />
+        <option name="mavenHomeTypeForPersistence" value="CUSTOM" />
         <option name="userSettingsFile" value="D:\tools\apache-maven-3.6.0\conf\settings.xml" />
       </MavenGeneralSettings>
     </option>
@@ -121,6 +147,9 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-384" />
     <option name="y" value="77" />
@@ -216,39 +245,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/SpringBootDemo/SpringBootDemo",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "MavenSettings",
-    "spring.configuration.checksum": "72adca9c15a46827ef6d8d319488b962",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven.apidoc.clients [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.apidoc.clients [install].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/git-projects/apidoc.clients/src/main/java/com/tx06/entity&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;72adca9c15a46827ef6d8d319488b962&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\git-projects\apidoc.clients\src\main\java\com\tx06\entity" />
       <recent name="D:\projects\apidoc.clients\src\main\java\com\tx06\entity" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.tx06.entity" />
+      <recent name="com.tx06.handle" />
       <recent name="com.tx06.interceptor.handle" />
       <recent name="com.tx06.request" />
       <recent name="com.tx06.interceptor" />
-      <recent name="com.tx06.annotation" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="xenon.apidoc.clients" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <method v="2">
@@ -262,6 +295,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="xenon.apidoc.clients" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="TestNG">
       <option name="TEST_OBJECT" value="CLASS" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
@@ -271,6 +310,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-17.0.10-corretto-17.0.10-4caba194b151-5cd809f4" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SshConsoleOptionsProvider">
@@ -327,6 +373,9 @@
       <workItem from="1710247156315" duration="3876000" />
       <workItem from="1711701630530" duration="1981000" />
       <workItem from="1712039761939" duration="5260000" />
+      <workItem from="1718855721668" duration="24232000" />
+      <workItem from="1719072693971" duration="2626000" />
+      <workItem from="1719186761806" duration="843000" />
     </task>
     <task id="LOCAL-00001" summary="11111">
       <created>1664110071348</created>

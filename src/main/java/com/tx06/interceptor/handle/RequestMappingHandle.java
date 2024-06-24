@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class RequestMappingHandle extends DefaultMappingHandle{
     @Override
     public void initMethodTitle() {
-        apidoc.setTitle(((RequestMapping)requestMapping).name());
+        //apidoc.setTitle(((RequestMapping)requestMapping).name());
     }
 
     @Override
     public void initMethodType() {
-        apidoc.setMethod(request.getMethod());
+        //apidoc.setMethod(request.getMethod());
     }
 
     @Override

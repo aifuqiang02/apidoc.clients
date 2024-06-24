@@ -1,13 +1,12 @@
 package com.tx06.request;
 
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.tx06.config.ApiDocProp;
-import com.tx06.entity.Apidoc;
-import com.tx06.entity.Callback;
-import com.tx06.entity.TMessage;
+import com.tx06.entity.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -25,11 +24,18 @@ public class SenderServiceImpl {
     private final Log log = LogFactory.getLog(SenderServiceImpl.class);
 
     @Async("apidocTaskExecutor")
-    public void send(Apidoc apidoc, Callback callback){
+    public void send(Api apidoc, Callback callback){
         try {
-            String param = JSON.toJSONString(apidoc);
-
-            String str = HttpUtil.post(SpringUtil.getBean(ApiDocProp.class).getServer().getBasePath() + "/apiDoc/add?version="+VERSION,param);
+            ApiDocProp.Server server = SpringUtil.getBean(ApiDocProp.class).getServer();
+            ApiBatchAddVO apiBatchAddVO = new ApiBatchAddVO();
+            apiBatchAddVO.setApi(apidoc);
+            apiBatchAddVO.setProjectUuid(apidoc.getProjectUuid());
+            String param = JSON.toJSONString(apiBatchAddVO);
+            HttpRequest httpRequest = HttpUtil.createPost(server.getBasePath() + "/api/api?version="+VERSION);
+            httpRequest.addHeaders(Map.of("Content-Type","application/json;charset=UTF-8"));
+            httpRequest.addHeaders(Map.of("Authorization",server.getToken()));
+            httpRequest.body(param);
+            String str = httpRequest.execute().body();
             JSONObject rs = JSON.parseObject(str);
             if(!rs.containsKey("code") || rs.getInteger("code")!=200){
                 log.error("apidoc 接口请求失败：" + rs.getString("msg"));

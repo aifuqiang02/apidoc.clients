@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class PutMappingHandle extends DefaultMappingHandle{
     @Override
     public void initMethodTitle() {
-        apidoc.setTitle(((PutMapping)requestMapping).name());
+        //apidoc.setTitle(((PutMapping)requestMapping).name());
     }
 
     @Override
     public void initMethodType() {
-        apidoc.setMethod("PUT");
+        //apidoc.setMethod("PUT");
     }
 
     @Override

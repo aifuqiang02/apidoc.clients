@@ -1,6 +1,7 @@
 package com.tx06.interceptor;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.MD5;
@@ -9,10 +10,10 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.tx06.config.Constant;
-import com.tx06.config.ApiDocProp;
-import com.tx06.entity.Apidoc;
-import com.tx06.entity.Callback;
+import com.tx06.config.*;
+import com.tx06.entity.*;
+import com.tx06.handle.BaseRequestParamHandle;
+import com.tx06.handle.RequestParamHandleFactory;
 import com.tx06.request.SenderServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.CommandLineRunner;
@@ -28,7 +29,10 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -114,29 +118,25 @@ public class StaticAnalysis implements CommandLineRunner {
         }
         List<String> alreadLines = FileUtil.readLines("c:/urls.db","utf-8");
         for (RequestMappingInfo info : methodMap.keySet()){
-            Apidoc api = new Apidoc();
             HandlerMethod handlerMethod = methodMap.get(info);
             RestController restController = handlerMethod.getBeanType().getAnnotation(RestController.class);
-
-            api.setProjectUuid(MappingHandleBuilder.getProp().server.getUuid());
-            api.setConfirmed("2");
-            setMethodType(handlerMethod,api);
-            setUrlTitle( handlerMethod, info, api);
-            setParameters( handlerMethod, api);
-            setResponse( handlerMethod, api);
-            String line = SecureUtil.md5( api.getUrl() + api.getFullTitle() + api.getParameterKey());
-            if(restController == null || StrUtil.isEmpty(restController.value()) || StrUtil.isEmpty(info.getName()) || alreadLines.contains(line)){
+            if(StrUtil.isBlank(info.getName()) || restController == null){
                 continue;
             }
+            Api api = buildApi( handlerMethod,info);
+            String line = api.getUniqueIdentifier();
+            /*if(alreadLines.contains(line)){
+                continue;
+            }*/
             SpringUtil.getBean(SenderServiceImpl.class).send(api, new Callback() {
                 @Override
-                public void onSuccess(Apidoc apidoc) {
-                    String line = SecureUtil.md5( apidoc.getUrl() + apidoc.getFullTitle() + apidoc.getParameterKey());
+                public void onSuccess(Api apidoc) {
+                    String line = apidoc.getUniqueIdentifier();
                     FileUtil.appendString(line +"\n","c:/urls.db","utf-8");
                 }
 
                 @Override
-                public void onFailure(Apidoc apidoc, Exception exception) {
+                public void onFailure(Api apidoc, Exception exception) {
                     log.error("接口文档同步失败", exception);
                     log.error("apidoc", JSON.toJSONString(apidoc));
                 }
@@ -144,48 +144,123 @@ public class StaticAnalysis implements CommandLineRunner {
         }
     }
 
+    public Api buildApi(HandlerMethod handlerMethod,RequestMappingInfo requestMappingInfo) throws IllegalAccessException, InstantiationException {
+        Api api = new Api();
+        api.setProjectUuid(MappingHandleBuilder.getProp().server.getUuid());
+        setTitle( handlerMethod, requestMappingInfo, api);
+        setMethodType(handlerMethod,api);
+        setContentType(handlerMethod,api);
+        setUrl( requestMappingInfo, api);
+        setParameters( handlerMethod, api);
+
+        return api;
+    }
+
 
     private void setResponse(HandlerMethod handlerMethod,Apidoc apidoc) throws IllegalAccessException, InstantiationException {
         apidoc.setResponseExamples(JSON.toJSONString(newInstance( handlerMethod.getMethod().getReturnType())));
     }
 
-    private void setParameters(HandlerMethod handlerMethod,Apidoc apidoc) throws IllegalAccessException, InstantiationException {
+    private void setParameters(HandlerMethod handlerMethod,Api api) throws IllegalAccessException, InstantiationException {
         String [] parameterNames = parameterNameDiscovere.getParameterNames(handlerMethod.getMethod());
         MethodParameter [] parameters = handlerMethod.getMethodParameters();
-        boolean hasRequestBody = hasRequestBody(handlerMethod);
-        Map parameterExamples = new HashMap();
-        if(hasRequestBody){
-            for(int i=0;i<parameters.length;i++){
-                MethodParameter methodParameter = parameters[i];
-                Parameter parameter = methodParameter.getParameter();
-                RequestBody requestBody = parameter.getAnnotation(RequestBody.class);
-                if(requestBody != null){
-                    try {
-                        parameterExamples.putAll(newInstance(parameter.getType()));
-                    }catch (Exception e){
-                        log.error(parameter.getType().getSimpleName() + "初始化失败,"+e.getMessage());
-                    }
-                }else{
-                    if(BeanUtils.isSimpleProperty(parameter.getType())){//基本类型
-                        parameterExamples.put(parameterNames[i],"");
-                    }else{
-                        parameterExamples.putAll(newInstance(parameter.getType()));
-                    }
+        RequestParams requestParams = new RequestParams();
+        for(int i=0;i<parameters.length;i++){
+            MethodParameter methodParameter = parameters[i];
+            Parameter parameter = methodParameter.getParameter();
+            RequestBody requestBody = parameter.getAnnotation(RequestBody.class);
+            if(requestBody != null){
+                try {
+                    List<com.tx06.entity.RequestParam> responseParams = new ArrayList<>();
+                    typeToRequestParams(responseParams,parameter.getType(),parameterNames[i],0);
+                    requestParams.setBodyParams(responseParams);
+                    api.setRequestParams(requestParams);
+                }catch (Exception e){
+                    log.error(parameter.getType().getSimpleName() + "初始化失败,"+e.getMessage());
+                }
+            }else{
+                List<com.tx06.entity.RequestParam> responseParams = new ArrayList<>();
+                typeToRequestParams(responseParams,parameter.getType(),parameterNames[i],0);
+                requestParams.setQueryParams(responseParams);
+                api.setRequestParams(requestParams);
+            }
+        }
+    }
+
+    private void typeToRequestParams(List<com.tx06.entity.RequestParam> responseParams,Class<?> type,String fieldName,int index){
+        if(index > 5){
+            return;
+        }
+        if(type.isArray()){
+            com.tx06.entity.RequestParam requestParam = createRequestParam(type, fieldName);
+            // 获取泛型类型
+            Type genericParameterType = type;
+            if (genericParameterType instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) genericParameterType;
+                Type[] typeArguments = parameterizedType.getActualTypeArguments();
+                if (typeArguments.length > 0) {
+                    Type listGenericType = typeArguments[0];
+
+                    List<com.tx06.entity.RequestParam> childList = new ArrayList<>();
+                    typeToRequestParams(childList, (Class<?>) listGenericType,null,index+1);
+                    requestParam.setChildList(childList);
                 }
             }
-        }else {
-            for(int i=0;i<parameters.length;i++){
-                MethodParameter methodParameter = parameters[i];
-                Parameter parameter = methodParameter.getParameter();
-                if(BeanUtils.isSimpleProperty(parameter.getType())){//基本类型
-                    parameterExamples.put(parameterNames[i],"");
-                }else{
-                    parameterExamples.putAll(newInstance(parameter.getType()));
+        }else{
+            if(BeanUtils.isSimpleProperty(type)){//基本类型
+                fieldToRequestParam(responseParams,type,fieldName,index);
+            }else{
+                BaseRequestParamHandle handle = RequestParamHandleFactory.getHandle(type.getName());
+                if(handle != null){
+                    handle.handleRequestParam(responseParams,type,fieldName,index);
+                }else if(type.getName().contains(MappingHandleBuilder.getProp().getServer().getBasePackage())){
+                    // 遍历对象属性
+                    Field[] fields = type.getDeclaredFields();
+                    for (Field field : fields) {
+                        field.setAccessible(true);
+                        fieldToRequestParam(responseParams,field.getType(),field.getName(),index);
+                    }
                 }
             }
         }
-        apidoc.setParameterExamples(JSON.toJSONString(parameterExamples, WriteMapNullValue));
     }
+
+    private void fieldToRequestParam(List<com.tx06.entity.RequestParam> responseParams,Class<?> fieldType,String fieldName,int index){
+        if(fieldType.isArray()){
+            // 获取泛型类型
+            Type genericParameterType = fieldType;
+            if (genericParameterType instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) genericParameterType;
+                Type[] typeArguments = parameterizedType.getActualTypeArguments();
+                if (typeArguments.length > 0) {
+                    Type listGenericType = typeArguments[0];
+                    com.tx06.entity.RequestParam requestParam = createRequestParam(fieldType, fieldName);
+                    typeToRequestParams(requestParam.getChildList(), (Class<?>) listGenericType,null,index+1);
+                }
+            }
+        }else if(BeanUtils.isSimpleProperty(fieldType)){
+            com.tx06.entity.RequestParam requestParam = createRequestParam(fieldType, fieldName);
+            responseParams.add(requestParam);
+        } else {
+            com.tx06.entity.RequestParam requestParam = createRequestParam(fieldType, fieldName);
+            typeToRequestParams(requestParam.getChildList(),fieldType,null,index+1);
+        }
+    }
+
+    public static com.tx06.entity.RequestParam createRequestParam(Class<?> type,String fieldName){
+        com.tx06.entity.RequestParam requestParam = new com.tx06.entity.RequestParam();
+        requestParam.setId(Long.valueOf(RandomUtil.randomNumbers(18)));
+        requestParam.setParamType(ApiParamsType.getByType(type));
+        requestParam.setName(fieldName);
+        requestParam.setIsRequired(1);
+
+        ParamAttr paramAttr = new ParamAttr();
+        paramAttr.setId(Long.valueOf(RandomUtil.randomNumbers(18)));
+        paramAttr.setApiParamId(requestParam.getId());
+        requestParam.setParamAttr(paramAttr);
+        return requestParam;
+    }
+
 
     private JSONObject newInstance(Class c){
         try {
@@ -196,45 +271,70 @@ public class StaticAnalysis implements CommandLineRunner {
         return new JSONObject();
     }
 
-    private void setUrlTitle(HandlerMethod handlerMethod,RequestMappingInfo info,Apidoc apidoc){
+    /**
+     * 设置url
+     */
+    private void setUrl(RequestMappingInfo info,Api api){
         //设置url
         Set<String> patterns = info.getPatternsCondition().getPatterns();
-        apidoc.setUrl(patterns.toArray(new String[patterns.size()])[0]);
+        String url = patterns.toArray(new String[patterns.size()])[0];
+        api.setUri(url);
+    }
 
+    private void setTitle(HandlerMethod handlerMethod,RequestMappingInfo info,Api api){
+        //设置url
         RestController restController = handlerMethod.getBeanType().getAnnotation(RestController.class);
         if(restController == null || StrUtil.isEmpty(restController.value())){
             return;
         }
-        String controllerName = restController.value();
-        String methodName = info.getName();
-        apidoc.setTitle(methodName);
-        apidoc.setFullTitle((controllerName+"/"+methodName));
+        String requestMappingName = info.getName();
+        api.setName(requestMappingName);
     }
 
     /**
-     * 设置contentType、method
+     * 设置method
      * */
-    private void setMethodType(HandlerMethod handlerMethod,Apidoc apidoc){
+    private void setMethodType(HandlerMethod handlerMethod,Api api){
+        boolean hasRequestBody = hasRequestBody(handlerMethod);
+        String methodName = "GET";
+        if(handlerMethod.getMethodAnnotation(RequestMapping.class) != null){
+            RequestMapping requestMapping = handlerMethod.getMethodAnnotation(RequestMapping.class);
+            if(requestMapping.method().length > 0){
+                methodName = requestMapping.method()[0].name();
+            }else{
+                methodName = hasRequestBody ? "POST" : "GET";
+            }
+        }else if(handlerMethod.getMethodAnnotation(PostMapping.class) != null){
+            methodName = "POST";
+        }else if(handlerMethod.getMethodAnnotation(GetMapping.class) != null){
+            methodName = "GET";
+        }else if(handlerMethod.getMethodAnnotation(PutMapping.class) != null){
+            methodName = "PUT";
+        }else if(handlerMethod.getMethodAnnotation(DeleteMapping.class) != null){
+            methodName = "DELETE";
+        }
+        api.getApiAttrInfo().setRequestMethod(RequestMethodEnum.getByName(methodName));
+    }
+
+    /**
+     * 设置contentType
+     * */
+    private void setContentType(HandlerMethod handlerMethod,Api api){
         boolean hasRequestBody = hasRequestBody(handlerMethod);
         boolean hasFile = hasMultipartFile(handlerMethod);
+        BodyContentTypeEnum bodyContentTypeEnum = BodyContentTypeEnum.FROM_DATA;
+
         if(hasRequestBody){
-            apidoc.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            MethodParameter requestBodyParameter = getRequestBodyParameter( handlerMethod);
+            if(requestBodyParameter.getParameter().getType().isArray()){
+                bodyContentTypeEnum = BodyContentTypeEnum.JSON_ARRAY;
+            }else{
+                bodyContentTypeEnum = BodyContentTypeEnum.JSON_OBJECT;
+            }
         }else if(hasFile){
-            apidoc.setContentType(MediaType.MULTIPART_FORM_DATA_VALUE);
-        }else{
-            apidoc.setContentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+            bodyContentTypeEnum = BodyContentTypeEnum.BINARY;
         }
-        if(handlerMethod.getMethodAnnotation(RequestMapping.class) != null){
-            apidoc.setMethod(hasRequestBody ? "POST" : "GET");
-        }else if(handlerMethod.getMethodAnnotation(PostMapping.class) != null){
-            apidoc.setMethod("POST");
-        }else if(handlerMethod.getMethodAnnotation(GetMapping.class) != null){
-            apidoc.setMethod("GET");
-        }else if(handlerMethod.getMethodAnnotation(PutMapping.class) != null){
-            apidoc.setMethod("PUT");
-        }else if(handlerMethod.getMethodAnnotation(DeleteMapping.class) != null){
-            apidoc.setMethod("DELETE");
-        }
+        api.getApiAttrInfo().setContentType(bodyContentTypeEnum.getValue());
     }
 
     private boolean hasRequestBody(HandlerMethod handlerMethod){
@@ -249,6 +349,18 @@ public class StaticAnalysis implements CommandLineRunner {
             }
         }
         return hasRequestBody;
+    }
+
+    private MethodParameter getRequestBodyParameter(HandlerMethod handlerMethod){
+        MethodParameter [] parameters = handlerMethod.getMethodParameters();
+        for (int i=0;i<parameters.length;i++){
+            MethodParameter methodParameter = parameters[i];
+            RequestBody requestBody = methodParameter.getParameter().getAnnotation(RequestBody.class);
+            if(requestBody != null){
+                return methodParameter;
+            }
+        }
+        return null;
     }
 
     private boolean hasMultipartFile(HandlerMethod handlerMethod){

@@ -6,12 +6,12 @@ public class GetMappingHandle extends DefaultMappingHandle{
 
     @Override
     public void initMethodTitle() {
-        apidoc.setTitle(((GetMapping)requestMapping).name());
+        //apidoc.setTitle(((GetMapping)requestMapping).name());
     }
 
     @Override
     public void initMethodType() {
-        apidoc.setMethod("GET");
+        //apidoc.setMethod("GET");
     }
 
     @Override
