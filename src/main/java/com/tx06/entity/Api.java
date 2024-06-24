@@ -208,7 +208,7 @@ public class Api {
 
     /**获取唯一标识*/
     public String getUniqueIdentifier(){
-        return this.getUri() + this.getApiAttrInfo().getRequestMethod();
+        return this.getProjectUuid() + this.getUri() + this.getApiAttrInfo().getRequestMethod();
     }
 
     public AuthInfo getAuthInfo() {

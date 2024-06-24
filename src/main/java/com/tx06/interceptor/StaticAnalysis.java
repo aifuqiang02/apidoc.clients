@@ -51,9 +51,9 @@ public class StaticAnalysis implements CommandLineRunner {
     public void run(String... args) throws Exception {
         try {
             init();
-            tableCommentCheck();
-            rsyncFieldComment();
-            rsyncDict();
+            //tableCommentCheck();
+            //rsyncFieldComment();
+            //rsyncDict();
             start();
             log.debug("StaticAnalysis 执行完成");
         }catch (Exception e){
@@ -108,15 +108,20 @@ public class StaticAnalysis implements CommandLineRunner {
         });
     }
 
+    private String getDbName(){
+        return "c:/" + MappingHandleBuilder.getProp().server.getUuid() + ".db";
+    }
+
     public void start() throws InstantiationException, IllegalAccessException, IOException {
+        log.error("缓存文件地址：", getDbName());
         log.debug("同步新增的接口");
         RequestMappingHandlerMapping mapping = SpringUtil.getBean(RequestMappingHandlerMapping.class);
         // 拿到Handler适配器中的所有方法
         Map<RequestMappingInfo, HandlerMethod> methodMap = mapping.getHandlerMethods();
-        if(!FileUtil.exist("urls.db")){
-            FileUtil.touch("urls.db");
+        if(!FileUtil.exist(getDbName())){
+            FileUtil.touch(getDbName());
         }
-        List<String> alreadLines = FileUtil.readLines("c:/urls.db","utf-8");
+        List<String> alreadLines = FileUtil.readLines(getDbName(),"utf-8");
         for (RequestMappingInfo info : methodMap.keySet()){
             HandlerMethod handlerMethod = methodMap.get(info);
             RestController restController = handlerMethod.getBeanType().getAnnotation(RestController.class);
@@ -125,14 +130,14 @@ public class StaticAnalysis implements CommandLineRunner {
             }
             Api api = buildApi( handlerMethod,info);
             String line = api.getUniqueIdentifier();
-            /*if(alreadLines.contains(line)){
+            if(alreadLines.contains(line)){
                 continue;
-            }*/
+            }
             SpringUtil.getBean(SenderServiceImpl.class).send(api, new Callback() {
                 @Override
                 public void onSuccess(Api apidoc) {
                     String line = apidoc.getUniqueIdentifier();
-                    FileUtil.appendString(line +"\n","c:/urls.db","utf-8");
+                    FileUtil.appendString(line +"\n",getDbName(),"utf-8");
                 }
 
                 @Override

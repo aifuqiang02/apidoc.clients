@@ -39,12 +39,12 @@ public class SenderServiceImpl {
             JSONObject rs = JSON.parseObject(str);
             if(!rs.containsKey("code") || rs.getInteger("code")!=200){
                 log.error("apidoc 接口请求失败：" + rs.getString("msg"));
-                callback.onFailure(apidoc, new Exception(rs.getString("msg")));
+                //callback.onFailure(apidoc, new Exception(rs.getString("msg")));
             }else{
-                callback.onSuccess(apidoc);
+                //callback.onSuccess(apidoc);
             }
         }catch (Exception e){
-            callback.onFailure(apidoc, e);
+            //callback.onFailure(apidoc, e);
             log.error("apidoc 接口请求失败：" + e.getMessage());
         }
     }
