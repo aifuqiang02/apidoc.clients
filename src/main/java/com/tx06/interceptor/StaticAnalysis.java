@@ -259,6 +259,9 @@ public class StaticAnalysis implements CommandLineRunner {
 
     // 是否忽略字段
     private boolean isIgnoreField(String fieldName){
+        if("serialVersionUID".contains(fieldName)){
+            return true;
+        }
         String ignoreField = MappingHandleBuilder.getProp().getServer().getIgnoreField();
         if(ignoreField!= null && ignoreField.contains(fieldName)){
             return true;
