@@ -24,6 +24,7 @@ public class RequestParam {
     private Integer isRequired; // 是否必需
     private String binaryRawData; // 二进制原始数据
     private String description; // 描述
+    private String dict; // 字典
     private Integer orderNo; // 排序号
     private Object isDefault; // 是否默认
     private ParamAttr paramAttr; // 参数属性

@@ -1,6 +1,7 @@
 package com.tx06.interceptor;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
@@ -20,6 +21,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.StandardReflectionParameterNameDiscoverer;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -43,7 +45,7 @@ import static com.alibaba.fastjson2.JSONWriter.Feature.WriteMapNullValue;
 @Order(value = 100)
 public class StaticAnalysis implements CommandLineRunner {
     private Log log = LogFactory.get(StaticAnalysis.class);
-    private static LocalVariableTableParameterNameDiscoverer parameterNameDiscovere = new LocalVariableTableParameterNameDiscoverer();
+    private static StandardReflectionParameterNameDiscoverer parameterNameDiscovere = new StandardReflectionParameterNameDiscoverer();
     private String dbName;
 
 
@@ -66,6 +68,13 @@ public class StaticAnalysis implements CommandLineRunner {
         if(!StrUtil.isEmpty(MappingHandleBuilder.getProp().getServer().getBasePath())){
             Constant.BASE_PATH = MappingHandleBuilder.getProp().getServer().getBasePath();
         }
+        Assert.isFalse(StrUtil.isBlank(MappingHandleBuilder.getProp().getServer().getBasePackage())
+                ,"tx06.server.basePackage 不能为空");
+        if(StrUtil.isBlank(MappingHandleBuilder.getProp().getServer().getIgnoreField())){
+            log.warn("tx06.server.ignoreField 为空");
+        }
+        Assert.isFalse(StrUtil.isBlank(MappingHandleBuilder.getProp().getServer().getToken()),
+                "tx06.server.token 为空");
 
         String [] arr = MappingHandleBuilder.getJdbcTemplate().getDataSource().getConnection().getMetaData().getURL().split("\\?")[0].split("/");
         dbName = arr[arr.length-1];
@@ -132,6 +141,8 @@ public class StaticAnalysis implements CommandLineRunner {
             String line = api.getUniqueIdentifier();
             if(alreadLines.contains(line)){
                 continue;
+            }else if(StrUtil.isBlank(api.getName())){
+                continue;
             }
             SpringUtil.getBean(SenderServiceImpl.class).send(api, new Callback() {
                 @Override
@@ -152,7 +163,7 @@ public class StaticAnalysis implements CommandLineRunner {
     public Api buildApi(HandlerMethod handlerMethod,RequestMappingInfo requestMappingInfo) throws IllegalAccessException, InstantiationException {
         Api api = new Api();
         api.setProjectUuid(MappingHandleBuilder.getProp().server.getUuid());
-        setTitle( handlerMethod, requestMappingInfo, api);
+        setTitle( requestMappingInfo, api);
         setMethodType(handlerMethod,api);
         setContentType(handlerMethod,api);
         setUrl( requestMappingInfo, api);
@@ -163,7 +174,12 @@ public class StaticAnalysis implements CommandLineRunner {
 
     private void setRequestHeaders(Api api) {
         List<RequestParam> headerParams = MappingHandleBuilder.getProp().getServer().getHeaderParams();
-        api.getRequestParams().setHeaderParams(headerParams);
+        RequestParams requestParams = api.getRequestParams();
+        if(requestParams == null){
+            requestParams = new RequestParams();
+            api.setRequestParams(requestParams);
+        }
+        requestParams.setHeaderParams(headerParams);
     }
 
 
@@ -259,6 +275,9 @@ public class StaticAnalysis implements CommandLineRunner {
 
     // 是否忽略字段
     private boolean isIgnoreField(String fieldName){
+        if(fieldName == null){
+            return true;
+        }
         if("serialVersionUID".contains(fieldName)){
             return true;
         }
@@ -306,12 +325,7 @@ public class StaticAnalysis implements CommandLineRunner {
         api.setUri(url);
     }
 
-    private void setTitle(HandlerMethod handlerMethod,RequestMappingInfo info,Api api){
-        //设置url
-        RestController restController = handlerMethod.getBeanType().getAnnotation(RestController.class);
-        if(restController == null || StrUtil.isEmpty(restController.value())){
-            return;
-        }
+    private void setTitle(RequestMappingInfo info,Api api){
         String requestMappingName = info.getName();
         api.setName(requestMappingName);
     }

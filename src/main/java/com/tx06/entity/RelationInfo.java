@@ -8,7 +8,6 @@ import java.math.BigDecimal;
  * 【请填写功能名称】对象 t_relation_info
  *
  * @author ruoyi
- * @date 2024-06-12
  */
 @Data
 public class RelationInfo {

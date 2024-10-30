@@ -42,6 +42,9 @@ public class ApiDocProp {
             if(basePath == null){
                 this.basePath = Constant.BASE_PATH;
             }
+            if(basePath.endsWith("/")){
+                this.basePath = basePath.substring(0,basePath.length()-1);
+            }
             return basePath;
         }
     }

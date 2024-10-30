@@ -5,23 +5,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--
-       发布命令mvn clean deploy -P release
-       工单系统：https://issues.sonatype.org/browse/OSSRH-84765
-       中央仓库：https://search.maven.org/search?q=tx06
-       nexus： https://s01.oss.sonatype.org/#view-repositories;releases~browsestorage
-       密钥：FFE1BFA925A97E50456944EA4560DF4009022F91
-
        发布流程
        1、mvn clean deploy -P release
-       2、登录nexus 点击菜单Staging Repositories
-       3、选中一项，Content/Delete 历史版本
-       4、选中复选框后，Close
-       5、等1分钟后，Release
+       2、登录https://central.sonatype.com/publishing/deployments 进行发布即可
+       3、发布后，等待几天。会自动同步到其他仓库
     -->
 
-    <artifactId>apidoc.clients</artifactId>
-    <version>2.0.0</version>
-    <groupId>com.tx06</groupId>
+    <artifactId>api-document</artifactId>
+    <version>1.0.0</version>
+    <groupId>io.github.aifuqiang02</groupId>
+    <name>io.github.aifuqiang02:api-document</name>
+    <url>git@github.com:aifuqiang02/apidoc.clients.git</url>
+    <description>api 接口文档生成</description>
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/aifuqiang02/apidoc.clients/issues</url>
+    </issueManagement>
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
@@ -31,7 +30,6 @@
         <license>
             <name>The Apache Software License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
         </license>
     </licenses>
     <scm>
@@ -44,13 +42,12 @@
         <developer>
             <name>艾付强</name>
             <email>635104032@qq.com</email>
-            <organization>陆新科技</organization>
         </developer>
     </developers>
 
     <!-- 版本声明 -->
     <properties>
-        <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
+        <javadocExecutable>D:\tools\Java\jbr17\bin\javadoc.exe</javadocExecutable>
         <xenon.version>1.0.0</xenon.version>
         <java.version>17</java.version>
         <spring.boot.version>3.0.7</spring.boot.version>
@@ -103,21 +100,25 @@
             <id>release</id>
             <build>
                 <plugins>
+                    <!--sonatype发布插件-->
                     <plugin>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.2</version>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.4.0</version>
+                        <extensions>true</extensions>
                         <configuration>
-                            <source>1.8</source>
-                            <target>1.8</target>
+                            <publishingServerId>central</publishingServerId>
+                            <tokenAuth>true</tokenAuth>
                         </configuration>
                     </plugin>
-                    <!-- Source -->
+                    <!-- 生成source -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
+                                <id>oss</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>jar-no-fork</goal>
@@ -126,32 +127,42 @@
                         </executions>
                     </plugin>
                     <!-- Javadoc -->
-                    <!-- GPG -->
-                    <!--<plugin>
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.6.3</version>
+                        <configuration>
+                            <charset>UTF-8</charset><!-- utf-8读取文件 -->
+                            <encoding>UTF-8</encoding><!-- utf-8进行编码代码 -->
+                            <docencoding>UTF-8</docencoding><!-- utf-8进行编码文档 -->
+                        </configuration>
+
                         <executions>
                             <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- 工程文件自动签名-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.3</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
                                 <phase>verify</phase>
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>-->
+                    </plugin>
                 </plugins>
             </build>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>sonatype</id>
-                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
-                </snapshotRepository>
-                <repository>
-                    <id>sonatype</id>
-                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
         </profile>
     </profiles>
 

@@ -10,7 +10,6 @@ import java.util.List;
  * 【请填写功能名称】对象 t_api
  *
  * @author ruoyi
- * @date 2024-06-05
  */
 @Data
 public class Api {

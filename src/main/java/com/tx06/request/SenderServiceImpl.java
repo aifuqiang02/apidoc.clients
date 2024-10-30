@@ -26,6 +26,7 @@ public class SenderServiceImpl {
     @Async("apidocTaskExecutor")
     public void send(Api apidoc, Callback callback){
         try {
+            long startTime = System.currentTimeMillis();
             ApiDocProp.Server server = SpringUtil.getBean(ApiDocProp.class).getServer();
             ApiBatchAddVO apiBatchAddVO = new ApiBatchAddVO();
             apiBatchAddVO.setApi(apidoc);
@@ -37,11 +38,13 @@ public class SenderServiceImpl {
             httpRequest.body(param);
             String str = httpRequest.execute().body();
             JSONObject rs = JSON.parseObject(str);
-            if(!rs.containsKey("code") || rs.getInteger("code")!=200){
-                log.error("apidoc 接口请求失败：" + rs.getString("msg"));
+            long endTime = (System.currentTimeMillis() - startTime);
+            if(!rs.containsKey("code") || rs.getInteger("code").intValue()!=0){
+                log.error("apidoc 接口请求失败，耗时：" + (endTime) + "ms：" + rs.getString("msg"));
                 //callback.onFailure(apidoc, new Exception(rs.getString("msg")));
             }else{
-                //callback.onSuccess(apidoc);
+                log.info("apidoc 接口请求成功，耗时：" + (endTime) + "ms");
+                callback.onSuccess(apidoc);
             }
         }catch (Exception e){
             //callback.onFailure(apidoc, e);
