@@ -9,6 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @ConfigurationProperties(prefix = "tx06")
@@ -27,6 +28,26 @@ public class ApiDocProp {
         private String uuid;
         //忽略字段
         private String ignoreField;
+        //忽略字段
+        private List<String> ignoreFieldList;
+        public List<String> getIgnoreFieldList() {
+            if(StrUtil.isBlank(ignoreField)){
+                return new ArrayList<>();
+            }
+            return ignoreFieldList;
+        }
+        public void setIgnoreField(String ignoreField) {
+            if(StrUtil.isBlank(ignoreField)){
+                return;
+            }
+            ignoreField = ignoreField.replace(" ",",");
+            ignoreField = ignoreField.replace("、",",");
+            ignoreField = ignoreField.replace("\\|",",");
+            ignoreField = ignoreField.replace("，",",");
+            this.ignoreField = ignoreField;
+            this.ignoreFieldList = Arrays.stream(ignoreField.split(",")).toList();
+        }
+
         //headerParams
         private List<RequestParam> headerParams = new ArrayList<>();
 

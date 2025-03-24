@@ -2,43 +2,43 @@ package com.tx06.interceptor;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.crypto.digest.MD5;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.tx06.config.*;
-import com.tx06.entity.*;
+import com.tx06.config.ApiParamsType;
+import com.tx06.config.BodyContentTypeEnum;
+import com.tx06.config.Constant;
+import com.tx06.config.RequestMethodEnum;
 import com.tx06.entity.RequestParam;
+import com.tx06.entity.*;
 import com.tx06.handle.BaseRequestParamHandle;
 import com.tx06.handle.RequestParamHandleFactory;
 import com.tx06.request.SenderServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.StandardReflectionParameterNameDiscoverer;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.SQLException;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import static com.alibaba.fastjson2.JSONWriter.Feature.WriteMapNullValue;
 
 @Component
@@ -57,6 +57,8 @@ public class StaticAnalysis implements CommandLineRunner {
             //rsyncFieldComment();
             //rsyncDict();
             start();
+            ApiChangeListener listener = new ApiChangeListener();
+            listener.startListening();
             log.debug("StaticAnalysis 执行完成");
         }catch (Exception e){
             e.printStackTrace();
@@ -191,6 +193,7 @@ public class StaticAnalysis implements CommandLineRunner {
         String [] parameterNames = parameterNameDiscovere.getParameterNames(handlerMethod.getMethod());
         MethodParameter [] parameters = handlerMethod.getMethodParameters();
         RequestParams requestParams = new RequestParams();
+        int methodType = api.getApiAttrInfo().getRequestMethod().intValue();
         for(int i=0;i<parameters.length;i++){
             MethodParameter methodParameter = parameters[i];
             Parameter parameter = methodParameter.getParameter();
@@ -204,11 +207,20 @@ public class StaticAnalysis implements CommandLineRunner {
                 }catch (Exception e){
                     log.error(parameter.getType().getSimpleName() + "初始化失败,"+e.getMessage());
                 }
-            }else{
+            }else if(methodType == RequestMethodEnum.GET.getValue()){
                 List<com.tx06.entity.RequestParam> responseParams = new ArrayList<>();
                 typeToRequestParams(responseParams,parameter.getType(),parameterNames[i],0);
                 requestParams.setQueryParams(responseParams);
                 api.setRequestParams(requestParams);
+            }else{
+                try {
+                    List<com.tx06.entity.RequestParam> responseParams = requestParams.getBodyParams() == null ? new ArrayList<>() : requestParams.getBodyParams();
+                    typeToRequestParams(responseParams,parameter.getType(),parameterNames[i],0);
+                    requestParams.setBodyParams(responseParams);
+                    api.setRequestParams(requestParams);
+                }catch (Exception e){
+                    log.error(parameter.getType().getSimpleName() + "初始化失败,"+e.getMessage());
+                }
             }
         }
     }
@@ -281,8 +293,8 @@ public class StaticAnalysis implements CommandLineRunner {
         if("serialVersionUID".contains(fieldName)){
             return true;
         }
-        String ignoreField = MappingHandleBuilder.getProp().getServer().getIgnoreField();
-        if(ignoreField!= null && ignoreField.contains(fieldName)){
+        List<String> ignoreFieldList = MappingHandleBuilder.getProp().getServer().getIgnoreFieldList();
+        if(ignoreFieldList.contains(fieldName)){
             return true;
         }else{
             return false;
@@ -340,8 +352,12 @@ public class StaticAnalysis implements CommandLineRunner {
             RequestMapping requestMapping = handlerMethod.getMethodAnnotation(RequestMapping.class);
             if(requestMapping.method().length > 0){
                 methodName = requestMapping.method()[0].name();
+            }else if(hasRequestBody){
+                methodName = "POST";
+            }else if(parameterIsBasicType(handlerMethod)){
+                methodName = "GET";
             }else{
-                methodName = hasRequestBody ? "POST" : "GET";
+                methodName = "POST";
             }
         }else if(handlerMethod.getMethodAnnotation(PostMapping.class) != null){
             methodName = "POST";
@@ -388,6 +404,23 @@ public class StaticAnalysis implements CommandLineRunner {
             }
         }
         return hasRequestBody;
+    }
+
+    /**
+     * 请求参数是否全部是基本类型和String
+     */
+    private boolean parameterIsBasicType(HandlerMethod handlerMethod){
+        MethodParameter [] parameters = handlerMethod.getMethodParameters();
+        boolean isBasicType = true;
+        for (int i=0;i<parameters.length;i++){
+            MethodParameter methodParameter = parameters[i];
+            if(!(ObjectUtil.isBasicType(methodParameter.getParameter().getType())
+                    || "String".equals(methodParameter.getParameter().getType().getSimpleName()))){
+                isBasicType = false;
+                break;
+            }
+        }
+        return isBasicType;
     }
 
     private MethodParameter getRequestBodyParameter(HandlerMethod handlerMethod){
