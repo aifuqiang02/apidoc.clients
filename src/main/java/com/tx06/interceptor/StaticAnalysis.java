@@ -82,43 +82,6 @@ public class StaticAnalysis implements CommandLineRunner {
         dbName = arr[arr.length-1];
 
     }
-
-    private void tableCommentCheck() throws SQLException {
-
-        log.debug("数据库表备注格式检查");
-        String sql = "select t.`table_name`,t.`table_comment` from `information_schema`.`TABLES` t where t.`TABLE_SCHEMA` = '"+dbName+"' and table_comment not like '%|%'";
-        List<Map<String,Object>> columns = MappingHandleBuilder.getJdbcTemplate().queryForList(sql);
-        columns.forEach(r->{
-            String tableName = (String) r.get("table_name");
-            String tableComment = (String) r.get("table_comment");
-            log.info(String.format("表%s 备注格式错误，期望controllerPath|tableComment，目前：%s", tableName, tableComment));
-        });
-    }
-
-    private void rsyncFieldComment() throws SQLException {
-        log.debug("同步数据库字段备注");
-        String sql = "SELECT c.`COLUMN_NAME` AS field,c.`COLUMN_COMMENT` AS name FROM `information_schema`.`COLUMNS` c WHERE c.`TABLE_SCHEMA` = '" + dbName
-                + "'  AND c.column_comment IS NOT NULL AND c.column_comment != ''  GROUP BY c.column_name";
-        List<Map<String,Object>> columns = MappingHandleBuilder.getJdbcTemplate().queryForList(sql);
-        columns.stream().forEach(r->{
-            r.put("projectUuid",MappingHandleBuilder.getProp().server.getUuid());
-            r.put("dataType","3");
-        });
-        SpringUtil.getBean(SenderServiceImpl.class).rsyncFieldComment(columns);
-    }
-
-    private void rsyncDict() throws SQLException {
-        log.debug("同步数据库字段备注");
-        String sql = MappingHandleBuilder.getProp().server.getDictSql();
-        if(sql == null){
-            return;
-        }
-        List<Map<String,Object>> columns = MappingHandleBuilder.getJdbcTemplate().queryForList(sql);
-        columns.forEach(r->{
-            r.put("u_project_uuid",MappingHandleBuilder.getProp().server.getUuid());
-        });
-    }
-
     private String getDbName(){
         return "c:/" + MappingHandleBuilder.getProp().server.getUuid() + ".db";
     }
@@ -354,8 +317,6 @@ public class StaticAnalysis implements CommandLineRunner {
                 methodName = requestMapping.method()[0].name();
             }else if(hasRequestBody){
                 methodName = "POST";
-            }else if(parameterIsBasicType(handlerMethod)){
-                methodName = "GET";
             }else{
                 methodName = "POST";
             }
